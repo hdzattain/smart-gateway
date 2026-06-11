@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>smart-gateway.shop 支付系统对接说明</title>
+  <style>
+    :root { color-scheme: light; --fg:#0f172a; --muted:#475569; --brand:#2563eb; --bg:#f8fafc; --card:#fff; --line:#e2e8f0; --code:#0f172a; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",Arial,sans-serif; color:var(--fg); background:linear-gradient(180deg,#eef6ff 0,#f8fafc 260px); }
+    header { padding:48px 24px 28px; max-width:1120px; margin:auto; }
+    header .badge { display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border:1px solid #bfdbfe; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-weight:600; font-size:13px; }
+    h1 { margin:20px 0 12px; font-size:42px; line-height:1.12; letter-spacing:-.04em; }
+    h2 { margin:38px 0 14px; font-size:24px; letter-spacing:-.02em; }
+    h3 { margin:26px 0 10px; font-size:18px; }
+    p, li { color:var(--muted); line-height:1.75; }
+    main { max-width:1120px; margin:0 auto 64px; padding:0 24px; display:grid; grid-template-columns:280px 1fr; gap:28px; }
+    nav { position:sticky; top:20px; align-self:start; background:rgba(255,255,255,.84); backdrop-filter:blur(12px); border:1px solid var(--line); border-radius:18px; padding:18px; }
+    nav a { display:block; padding:8px 10px; color:#334155; text-decoration:none; border-radius:10px; font-size:14px; }
+    nav a:hover { background:#eff6ff; color:#1d4ed8; }
+    article { background:rgba(255,255,255,.9); border:1px solid var(--line); border-radius:22px; padding:30px; box-shadow:0 18px 45px rgba(15,23,42,.06); }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .card { border:1px solid var(--line); border-radius:16px; padding:16px; background:var(--card); }
+    .card strong { display:block; margin-bottom:6px; color:#0f172a; }
+    code { background:#e2e8f0; color:var(--code); padding:2px 6px; border-radius:6px; }
+    pre { overflow:auto; background:#0b1220; color:#e5e7eb; padding:16px; border-radius:14px; line-height:1.55; font-size:13px; }
+    pre code { background:transparent; color:inherit; padding:0; }
+    table { width:100%; border-collapse:collapse; margin:14px 0; overflow:hidden; border-radius:12px; }
+    th,td { border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; }
+    .warn { border-left:4px solid #f59e0b; background:#fffbeb; padding:12px 14px; border-radius:12px; color:#92400e; }
+    .ok { border-left:4px solid #10b981; background:#ecfdf5; padding:12px 14px; border-radius:12px; color:#065f46; }
+    footer { max-width:1120px; margin:0 auto 40px; padding:0 24px; color:#64748b; font-size:13px; }
+    @media (max-width:900px){ main{grid-template-columns:1fr;} nav{position:static;} h1{font-size:34px;} .grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">smart-gateway.shop · Payment Integration API</span>
+    <h1>支付系统对接说明书</h1>
+    <p>面向客户公司技术团队，说明如何将信用卡、Stripe、PayPal、支付宝、微信支付等支付能力对接到 Smart Gateway 的充值与订阅体系。</p>
+  </header>
+  <main>
+    <nav>
+      <a href="#overview">概览</a>
+      <a href="#auth">认证与环境</a>
+      <a href="#stripe">Stripe / 信用卡</a>
+      <a href="#paypal">PayPal</a>
+      <a href="#alipay-wechat">支付宝 / 微信支付</a>
+      <a href="#waffo">Waffo / 聚合支付</a>
+      <a href="#creem">Creem</a>
+      <a href="#epay">EPay</a>
+      <a href="#subscriptions">订阅套餐</a>
+      <a href="#webhooks">Webhook 规范</a>
+      <a href="#handoff">交付清单</a>
+    </nav>
+    <article>
+      <section id="overview">
+        <h2>1. 概览</h2>
+        <p>Smart Gateway 支付体系支持两类业务：用户余额充值（Top-up）与订阅套餐购买（Subscription）。客户侧可以选择直接使用平台内置的 Stripe/Waffo/Creem/EPay，也可以通过自有支付网关把 PayPal、支付宝、微信支付等支付结果回调到平台。</p>
+        <div class="grid">
+          <div class="card"><strong>生产地址</strong><code>http://smart-gateway.shop</code></div>
+          <div class="card"><strong>健康检查</strong><code>GET /healthz</code></div>
+          <div class="card"><strong>推荐信用卡渠道</strong>Stripe 或 Waffo Card Checkout</div>
+          <div class="card"><strong>推荐国内支付渠道</strong>通过 EPay/聚合支付接入支付宝、微信支付</div>
+        </div>
+        <p class="warn">正式处理银行卡或钱包支付前，建议将站点升级到 HTTPS，并在支付服务商后台启用 webhook 签名校验。</p>
+      </section>
+
+      <section id="auth">
+        <h2>2. 认证与环境</h2>
+        <p>用户发起支付接口需要登录态 Cookie 和 <code>New-Api-User</code> 请求头；支付服务商回调接口是公开入口，但必须由服务端使用签名密钥校验。</p>
+        <pre><code>Cookie: _session=...
+New-Api-User: &lt;user_id&gt;
+Content-Type: application/json</code></pre>
+        <p>管理员配置支付参数时，需使用管理员账号登录后台。管理员账号和初始密码由交付方单独提供，不应写入 Git 仓库或前端代码。</p>
+      </section>
+
+      <section id="stripe">
+        <h2>3. Stripe / 信用卡支付</h2>
+        <p>Stripe 是推荐的海外信用卡接入方式，适合 Visa、Mastercard、Amex、Apple Pay、Google Pay 等卡组织或钱包能力。</p>
+        <h3>3.1 Webhook 地址</h3>
+        <pre><code>POST http://smart-gateway.shop/api/stripe/webhook</code></pre>
+        <h3>3.2 用户余额充值</h3>
+        <pre><code>POST /api/user/self/stripe/amount
+POST /api/user/self/stripe/pay</code></pre>
+        <p>示例请求：</p>
+        <pre><code>{
+  "amount": 10,
+  "top_up_count": 1
+}</code></pre>
+        <h3>3.3 订阅套餐支付</h3>
+        <pre><code>POST /api/subscription/stripe/pay</code></pre>
+        <pre><code>{
+  "plan_id": 1
+}</code></pre>
+        <h3>3.4 客户技术需提供</h3>
+        <ul>
+          <li>Stripe Secret Key</li>
+          <li>Stripe Publishable Key</li>
+          <li>Webhook Signing Secret</li>
+          <li>结算币种、税务/发票要求、成功/失败跳转页面</li>
+        </ul>
+      </section>
+
+      <section id="paypal">
+        <h2>4. PayPal 对接</h2>
+        <p>当前平台未将 PayPal 作为内置一等支付渠道，但客户可通过两种方式接入：</p>
+        <table><thead><tr><th>方案</th><th>说明</th><th>适用场景</th></tr></thead><tbody>
+          <tr><td>聚合支付</td><td>通过 Waffo/EPay 或客户现有支付网关把 PayPal 订单统一转换为平台充值/订阅回调</td><td>最快上线</td></tr>
+          <tr><td>自定义适配器</td><td>客户侧服务完成 PayPal Orders API 流程，再调用 Smart Gateway 管理端完成额度发放</td><td>客户已有 PayPal 技术栈</td></tr>
+        </tbody></table>
+        <h3>4.1 推荐流程</h3>
+        <ol>
+          <li>客户前端调用客户自有后端创建 PayPal Order。</li>
+          <li>用户在 PayPal 完成支付。</li>
+          <li>客户后端验证 PayPal webhook / capture 结果。</li>
+          <li>客户后端调用 Smart Gateway 管理后台或人工审核接口完成充值/订阅绑定。</li>
+        </ol>
+      </section>
+
+      <section id="alipay-wechat">
+        <h2>5. 支付宝 / 微信支付</h2>
+        <p>支付宝与微信支付建议通过 EPay 或客户已有聚合支付网关接入。平台已提供 EPay 通知与返回入口，可承接扫码支付、H5 支付或聚合支付结果。</p>
+        <h3>5.1 用户充值支付入口</h3>
+        <pre><code>POST /api/user/self/pay
+POST /api/user/self/amount</code></pre>
+        <h3>5.2 回调地址</h3>
+        <pre><code>POST http://smart-gateway.shop/api/user/epay/notify
+GET  http://smart-gateway.shop/api/user/epay/notify</code></pre>
+        <h3>5.3 订阅回调地址</h3>
+        <pre><code>POST http://smart-gateway.shop/api/subscription/epay/notify
+GET  http://smart-gateway.shop/api/subscription/epay/notify
+GET  http://smart-gateway.shop/api/subscription/epay/return
+POST http://smart-gateway.shop/api/subscription/epay/return</code></pre>
+        <p>客户技术侧需要确认：商户号、应用 ID、签名密钥、回调白名单、订单号规则、金额单位、幂等处理策略。</p>
+      </section>
+
+      <section id="waffo">
+        <h2>6. Waffo / Waffo Pancake 聚合支付</h2>
+        <p>Waffo 适合需要同时覆盖信用卡、钱包、本地化支付方式的客户。</p>
+        <pre><code>POST /api/user/self/waffo/amount
+POST /api/user/self/waffo/pay
+POST /api/user/self/waffo-pancake/amount
+POST /api/user/self/waffo-pancake/pay
+POST /api/subscription/waffo-pancake/pay</code></pre>
+        <h3>Webhook</h3>
+        <pre><code>POST http://smart-gateway.shop/api/waffo/webhook
+POST http://smart-gateway.shop/api/waffo-pancake/webhook/prod
+POST http://smart-gateway.shop/api/waffo-pancake/webhook/test</code></pre>
+        <h3>管理员辅助接口</h3>
+        <pre><code>POST /api/option/waffo-pancake/pair
+POST /api/option/waffo-pancake/save
+POST /api/option/waffo-pancake/subscription-product
+POST /api/option/waffo-pancake/subscription-product-options</code></pre>
+      </section>
+
+      <section id="creem">
+        <h2>7. Creem</h2>
+        <p>Creem 适合产品化 checkout 和订阅产品。</p>
+        <pre><code>POST /api/user/self/creem/pay
+POST /api/subscription/creem/pay
+POST http://smart-gateway.shop/api/creem/webhook</code></pre>
+      </section>
+
+      <section id="epay">
+        <h2>8. EPay</h2>
+        <p>EPay 通常用于国内聚合支付，适合作为支付宝、微信支付、银行卡快捷支付的统一入口。</p>
+        <pre><code>POST /api/user/self/pay
+POST /api/user/self/amount
+POST /api/subscription/epay/pay</code></pre>
+      </section>
+
+      <section id="subscriptions">
+        <h2>9. 订阅套餐管理</h2>
+        <p>管理员可创建套餐，用户可购买套餐并绑定到自己的账户。</p>
+        <pre><code>GET   /api/subscription/plans
+GET   /api/subscription/self
+PUT   /api/subscription/self/preference
+POST  /api/subscription/balance/pay
+POST  /api/subscription/stripe/pay
+POST  /api/subscription/creem/pay
+POST  /api/subscription/waffo-pancake/pay</code></pre>
+        <h3>管理员套餐接口</h3>
+        <pre><code>GET   /api/subscription/admin/plans
+POST  /api/subscription/admin/plans
+PUT   /api/subscription/admin/plans/:id
+PATCH /api/subscription/admin/plans/:id
+POST  /api/subscription/admin/bind</code></pre>
+      </section>
+
+      <section id="webhooks">
+        <h2>10. Webhook 规范</h2>
+        <p>支付回调必须满足以下要求：</p>
+        <ul>
+          <li>必须校验服务商签名，不能只相信前端跳转成功页。</li>
+          <li>必须按订单号做幂等处理，重复 webhook 不得重复加额度。</li>
+          <li>金额、币种、用户 ID、套餐 ID 必须与平台订单记录一致。</li>
+          <li>回调处理成功后返回服务商要求的成功响应。</li>
+        </ul>
+        <p class="ok">上线验收建议：创建低金额测试订单，完成支付，确认 webhook 入站，确认余额或订阅被正确发放，再重放 webhook 验证幂等。</p>
+      </section>
+
+      <section id="handoff">
+        <h2>11. 客户技术交付清单</h2>
+        <ul>
+          <li>生产站点：<code>http://smart-gateway.shop</code></li>
+          <li>Webhook 基础域名：<code>http://smart-gateway.shop</code></li>
+          <li>管理员后台由交付方单独提供账号密码。</li>
+          <li>支付密钥只允许存放在服务端配置，不得进入前端、GitHub 或日志。</li>
+          <li>如需要真实信用卡收单，建议先完成 HTTPS/PCI/风控策略确认。</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+  <footer>© 2026 smart-gateway.shop. Payment integration guide for customer engineering teams.</footer>
+</body>
+</html>
