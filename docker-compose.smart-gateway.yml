@@ -1,0 +1,47 @@
+services:
+  smart-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: smart-gateway:latest
+    container_name: smart-gateway
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+      - ./logs:/app/logs
+    environment:
+      # --- Core ---
+      - TZ=UTC
+      # SQLite by default (single-file, simplest). For production scale,
+      # point SQL_DSN at MySQL/Postgres instead and drop SQLITE_PATH.
+      - SQLITE_PATH=/data/one-api.db
+      # - SQL_DSN=user:pass@tcp(mysql:3306)/newapi   # uncomment for MySQL
+      # - REDIS_CONN_STRING=redis://redis:6379        # uncomment for Redis cache
+      # --- Session / crypto: CHANGE THIS before going live ---
+      - SESSION_SECRET=CHANGE_ME_TO_A_LONG_RANDOM_STRING
+      # --- Branding is applied at runtime via the admin options API,    ---
+      # --- NOT by editing source. Attribution (LICENSE/NOTICE) stays in ---
+      # --- the image at /licenses per Apache-2.0 + project Rule 5.       ---
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Optional: uncomment for MySQL-backed production
+  # mysql:
+  #   image: mysql:8.4
+  #   restart: always
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=CHANGE_ME
+  #     - MYSQL_DATABASE=newapi
+  #   volumes:
+  #     - ./mysql-data:/var/lib/mysql
+
+  # Optional: uncomment for Redis cache
+  # redis:
+  #   image: redis:7-alpine
+  #   restart: always

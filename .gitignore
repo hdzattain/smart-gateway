@@ -13,8 +13,17 @@ web/classic/dist
 web/node_modules
 web/dist
 .env
+.env.*
+!.env.example
+.admin_password
+*.pem
+*.key
+*.crt
 one-api
 new-api
+new-api-server
+delivery_manifest.json
+state.json
 /__debug_bin*
 .DS_Store
 tiktoken_cache
