@@ -1,0 +1,1004 @@
+CNP系统商户交易API——直连模式 / 跳转模
+式
+
+
+1、概述
+
+
+1.1、阅读指南
+本规范规定了商户接⼊龙跃外卡收单系统开展⽹络⽀付业务所需的报⽂格式、报⽂
+交换流程、⽂件格式等。
+
+
+
+1.2、版本说明
+
+
+1.2.1、版本：V2.0.3
+
+补充接⼜返回成功和失败案例。
+
+
+
+1.2.2、版本：V2.0.4
+
+增加⽀付来源属性。
+
+增加获取⽀付类型接⼜。
+
+
+
+1.2.3、版本：V2.0.5
+
+新增查询接⼜
+
+
+
+1.3、术语
+
+
+
+                  1 / 21
+术语              说明
+
+CNP系统           提供CNP⽀付服务的系统，以下均指本
+                系统
+
+3DS             是VISA、MASTER信⽤卡组织为保护持
+                卡⼈利益，防⽌商户恶意盗卡⽽设置的
+                信⽤卡验证措施
+
+DM              决策管理，英⽂名：Decision Manage
+                r。为提升交易安全性，采⽤的风控策略
+                管理系统
+
+CNP             card not present, 在本⽂中均指线上外卡
+                ⽀付
+
+直连模式            在线上业务中，⽀付信息都由商户系统
+                来获取，以后台模式来完成付款。需注
+                意的是，直连⽀持3ds时，需跳转⼀个中
+                间页⾯，完成3ds处理。
+
+跳转模式            在线上业务⽀付过程中，需跳转到CNP
+                系统收银台，持卡⼈需在CNP系统的收
+                银台上输⼊卡⽚信息完成付款
+
+商户号             商户在CNP系统⼊⽹后，由CNP系统为
+                商户分配的编号，此编号系统内唯⼀
+
+商户订单号           指商户发起订单的请求号，在商户系统
+                应保持唯⼀
+
+
+
+2、接⼜规则
+
+
+2.1、报⽂通信
+
+
+2.1.1、通讯⽅式
+
+HTTP Post
+
+
+
+2.1.2、编码格式
+
+UTF-8
+
+             2 / 21
+2.1.3、报⽂头
+
+HTTP头：application/form-data; charset=UTF-8。
+
+
+参数                       数值                      说明
+
+cnp-merchant-id          Sdf234k23               商户APPID
+
+
+
+2.2、报⽂签名
+为了确保数据在传输过程中不被篡改，本系统要求您对⽀付请求数据进⾏签名，并
+将数据签名同交易⼀并上送⽀付服务器。
+
+
+
+2.2.1、算法
+
+MD5签名算法
+
+
+
+2.2.2、签名计算
+
+所有参与签名的字段（不包括sign），按字段名的ASCLL码从⼩到⼤排序后，使⽤
+URL的键值对的格式(即key1=value1&key2=value2)拼接成字符串string，然后拼接结
+果前后分别加上 appId 和 secretKey，空字段不需要加⼊签名。
+
+      签名公式：signature = MD5(appId + string + secretKey)
+
+
+
+2.2.3、健壮性要求
+
+为保证接⼜健壮性，除明确标注不参与签名的字段外，务必对全字段进⾏处理，避
+免因接⼜升级造成验签失败。
+
+
+
+2.2.4、签名样例
+
+      待签名报⽂（已按字典序排列）：
+
+
+
+
+                                     3 / 21
+  1    8k7y4d9z2x1mamount=100&appId=8k7y4d9z2x1m&billingAddress={
+       "firstName": "Garcia", "lastName": "Hawking", "email":
+       "luciostrino1954@libero.it", "phone": "885368924",
+       "country": "US", "state": "Idaho", "city": "Austin",
+       "address": "379 East Village side, Austin, ID 78510",
+       "zipCode": "78510"
+       }&callbackUrl=http://longgao.testsaas.zbwlkj.net/api/saaspa
+       y&notificationUrl=http://longgao.testsaas.zbwlkj.net/api/sa
+       aspay&orderSn=685985154545515&productName=Kansas City
+       Chiefs #58 Derrick Thomas Red 75TH Throwback
+       Jersey&shippingAddress={ "firstName": "Garcia", "lastName":
+       "Hawking", "email": "luciostrino1954@libero.it", "phone":
+       "885368924", "country": "US", "state": "Idaho", "city":
+       "Austin", "address": "379 East Village side, Austin, ID
+       78510", "zipCode": "78510" }a5Ck8Q9pZ2L7rX3n4dK
+
+
+
+       签名结果：f64e3e3b3abc2b7f11377b5c594822bc
+
+
+
+2.2.5、参考代码（PHP）
+
+   1    public static function generateMD5Signature($appId,
+        $secretKey, $params)
+   2        {
+   3            $raw_params = $params;
+   4            $params = json_decode(json_encode($params), true,
+        512, JSON_BIGINT_AS_STRING);
+   5            $opt_params = $params;
+   6            // 移除可能已存在的签名参数，防⽌重复计算
+   7            if (isset($params['sign'])) {
+   8                unset($params['sign']);
+   9            }
+  10            // 对参数按字⺟顺序排序
+  11            ksort($params);
+  12            // 将参数拼接成字符串
+  13            $paramStr = '';
+  14            foreach ($params as $key => $value) {
+  15                // null 会导致 http_build_query 处理后，字段被过滤
+        掉，导致验签失败
+  16                if ($value === null) {
+
+
+                                  4 / 21
+  17                    continue;
+  18                }
+  19                // bool值转成字符串，否则http_build_query 处理后，
+       设置为0或者1，导致验签失败
+  20                if (is_bool($value)) {
+  21                    $value = $value ? 'true' : 'false';
+  22                }
+  23                $paramStr .= $key . '=' . trim($value) . '&';
+  24            }
+  25            // 去掉字符串末尾多余的 &
+  26            $paramStr = rtrim($paramStr, '&');
+  27            // 拼接 APPID 和秘钥
+  28            $stringToSign = $appId . $paramStr . $secretKey;
+  29
+  30            // ⽣成MD5签名
+  31            $signature = md5($stringToSign);
+  32
+  33            return $signature;
+  34      }
+
+
+
+
+3、⽀付状态码-payCode
+   1   100 交易成功(Approved)
+   2   101 交易失败(Declined)
+   3   102 ⽀付中(Pending)
+   4   103 订单关闭(Closed)
+   5   110 退款申请成功
+   6   111 退款成功
+   7   112 退款失败
+   8   121 查询成功
+   9   122 查询失败
+  10   140 上传成功
+  11   141 上传失败
+  12   201 商户状态⽆效
+  13   301 跳转
+  14   400 请求失败
+  15   401 未授权
+  16   404 未找到
+  17   500 请求参数错误
+  18   501 交易 ID 重复
+
+
+
+                                5 / 21
+  19    999 系统错误
+
+
+
+
+4、交易接⼜
+
+
+4.1、产品说明
+CNP系统(以下以本系统代称)外卡产品有两种对接模式：直连请求和⽹关跳转。
+
+
+
+4.1.1、直连模式
+
+直连请求要求商户系统具备⾦融系统的PCI DSS认证资质，商户可以在⾃⼰的⽹关或
+收银台上采集持卡⼈的卡号信息，通过后台Http请求上送给本系统进⾏付款。
+
+根据交易是否参与3DS，直连接⼜请求后，将有不同的处理逻辑：
+
+1、若交易参与3DS/DM，必需重定向⾄redirectUrl指定的页⾯完成3DS/DM流程及
+授权
+
+2、若交易不参与3DS/DM，交易结果在应答报⽂中确定。
+
+
+备注：若交易返回redirectUrl，则表⽰该交易将按3DS的流程完成交易，必须重定向
+⾄redirectUrl所在的页⾯才能完成付款。
+
+       不参与3DS/DM时处理流程，图⼀：直连模式⾮3DS时处理流程
+
+       流程说明：
+
+       1、持卡⼈在商户系统发起交易
+
+       2、CNP系统接收到⽀付请求后，向卡组织发起授权请求
+
+
+       3、CNP系统在卡组织应答后，完成交易处理
+
+       4、CNP系统返回⽀付结果给商户系统
+
+
+
+
+                        6 / 21
+商户⽹站                    CNP系统                   卡组织
+
+
+
+       1、消费（直连⾮3DS交易）
+
+                                 2、向卡组织发送授权请求
+
+                                 3、卡组织应答授权结果
+
+         4、返回⽀付结果
+
+
+商户⽹站                    CNP系统                   卡组织
+
+
+
+
+参与3DS/DM时处理流程，图⼆ 直连模式集成3DS调⽤时序图
+
+流程说明：
+
+1、持卡⼈在商户系统发起交易
+
+2、商户系统接受CNP系统的应答并解析（获取重定向链接）
+
+3、商户系统重定向⾄CNP系统返回的⽀付链接（即CNP系统收银台）
+
+
+4、CNP系统进⾏3DS/DM处理
+
+5、CNP系统向卡组织发起授权请求
+
+6、CNP系统接受卡组织应答
+
+
+7、CNP收银台在完成交易后⾃动跳转⾄回调地址指定的页⾯，如若商户未上
+送回调地址，则跳转⾄默认的⽀付完成页⾯。
+
+8、CNP系统发送异步通知到商户系统
+
+
+
+
+                        7 / 21
+  商户⽹站                                CNP系统                  卡组织
+
+
+
+             1、消费（直连3DS交易）
+
+               2、返回⽀付链接
+
+              3、重定向⾄⽀付链接
+
+                                4、3ds/dm处理
+
+
+
+                                              5、向卡组织发送授权请求
+
+                                              6、卡组织应答授权结果
+
+                  7、跳转⾄商户指定⻚⾯，若未上传则跳转⾄默认完成⻚⾯
+
+
+
+         8、交易成功，向商户指定地址发送异步通知
+
+
+  商户⽹站                                CNP系统                  卡组织
+
+
+
+
+4.1.2、跳转模式
+
+    图三 跳转模式调⽤时序图
+
+    流程说明：
+
+    1、商户系统发起⽀付请求
+
+    2、商户系统接受CNP系统的应答并解析（获取重定向链接）
+
+
+    3、商户系统重定⾄CNP系统返回的⽀付链接，即重定向⾄CNP系统的收银台
+
+    4、持卡⼈在CNP系统收银台页⾯输⼊⽀付卡信息并提交交易
+
+    5、CNP系统向卡组织发起授权请求
+
+
+    6、CNP系统接受卡组织应答
+
+    7、CNP收银台在完成交易后⾃动跳转⾄回调地址指定的页⾯，如若商户未上
+    送回调地址，则跳转⾄默认的⽀付完成页⾯。
+
+
+
+                             8 / 21
+ 8、CNP系统发送异步推送通知到商户系统
+
+
+
+
+商户⽹站                             CNP系统                  卡组织
+
+
+
+
+           1、消费（跳转交易）
+
+
+
+
+             2、返回⽀付链接
+
+
+
+
+           3、重定向⾄⽀付链接
+
+
+
+
+                 4、持卡⼈在收银台确认信息并填⼊卡号等⽀付信息
+
+
+
+
+                                         5、向卡组织发送授权请求
+
+
+
+
+                                         6、卡组织应答授权结果
+
+
+
+
+                7、展示交易结果并跳转⾄商户指定⻚⾯（如果有上送）
+
+
+
+
+       8、交易成功，向商户指定地址发送异步通知
+
+
+
+
+                        9 / 21
+      商户⽹站                              CNP系统                卡组织
+
+
+
+
+4.2、CNP API接⼜
+
+
+4.2.1、请求地址
+
+测试地址：请向商务获取
+正式地址：请向商务获取
+
+
+
+4.2.2、⽀付类型
+
+请求地址： /api/Tenant/getPaymentType
+
+响应结果：JSON格式，定义如下
+
+
+NAME                  VALUE                     DESCRITION
+
+code                  1                         状态码：1-成功，其他数
+                                                值-失败
+show                  0                         前端是否显⽰
+
+msg                   成功                        返回信息
+
+data                                            返回数据
+
+data.paymentType      "0"                       ⽀付类型：0-2D⽀付、1
+                                                或2 - 3D⽀付
+
+4.2.2.1、成功
+
+
+
+
+                              10 / 21
+       1   {
+       2       "code": 1,
+       3       "show": 0,
+       4       "msg": "",
+       5       "data": {
+       6           "paymentType": "1"
+       7       }
+       8   }
+
+
+
+
+4.2.3、⽀付订单
+
+请求地址： /api/SaaSPay/submit
+
+请求参数列表：
+
+
+                                                             DESCRIPTIO
+NAME               VALUE           TYPE           REQUIRED
+                                                             N
+
+appId              {{appId}}       string         true       商户号，联系
+                                                             商务
+
+sign               f95a8ce14e975 string           true       md5签名值
+                   a33296a9ebf29
+                   c8622d
+
+productName        Kansas City Ch string          true       产品名称
+                   iefs #58 Derric
+                   k Thomas Red
+                   75TH Throwba
+                   ck Jersey
+
+billingAddress json格式转字            string         true       账单信息
+               符串
+
+billingAddress. Garcia             string         true       账单-名
+firstName
+
+billingAddress. Hawking            string         true       账单-姓
+lastName
+
+billingAddress. luciostrino195 string             true       账单-邮箱
+email           4@libero.it
+
+billingAddress. 885368924          string         true       账单-电话
+phone
+
+
+                                        11 / 21
+billingAddress. US              string         true   账单-国家
+country
+
+billingAddress. Idaho           string         true   账单-州名
+state
+
+billingAddress. Austin          string         true   账单-城市
+city
+
+billingAddress. 379 East Villag string         true   账单-详细地址
+address         e side, Austin,
+                ID 78510
+billingAddress. 78510           string         true   账单-邮编
+zipCode
+shippingAddre json格式转字          string         true   邮寄信息
+ss              符串
+
+shippingAddre Garcia            string         true   邮寄-名
+ss.firstName
+
+shippingAddre Hawking           string         true   邮寄-姓
+ss.lastName
+
+shippingAddre luciostrino195 string            true   邮寄-邮箱
+ss.email      4@libero.it
+
+shippingAddre 885368924         string         true   邮寄-电话
+ss.phone
+
+shippingAddre US                string         true   邮寄-国家
+ss.country
+
+shippingAddre Idaho             string         true   邮寄-州名
+ss.state
+
+shippingAddre Austin            string         true   邮寄-城市
+ss.city
+
+shippingAddre 379 East Villag string           true   邮寄-详细地址
+ss.address    e side, Austin,
+              ID 78510
+
+shippingAddre 78510             string         true   邮寄-邮编
+ss.zipCode
+
+amount          32.1            string         true   交易⾦额
+
+orderSn         685985154545 string            true   下游订单号
+                515
+
+
+                                     12 / 21
+notificationUrl https://sportsj string           False   异步通知 URL
+                erseyhub.com.
+                local/zbwlkj_m
+                ain_handler_sy
+                n.php
+
+callbackUrl     https://sportsj string           False   跳转地址
+                erseyhub.com.
+                local/index.ph
+                p?main_page=
+                checkout_succ
+                ess
+
+customer_ip     130.162.223.2     string         true    ⽤户下单ip
+
+productUrl      https://www.s     string         true    "商品连接，如
+                portsjerseyhu                            果多个商品
+                b.com/mens-p                             ⽤""竖线""分
+                hiladelphia-ea                           割"
+                gles-26-saquo
+                n-barkley-gree
+                n-fuse-vapor-
+                untouchable-li
+                mited-stitched
+                -football-jerse
+                y-p-1.html
+
+productInfo     json格式转字          string         true    "商品信息，数
+                符串                                       组转json"
+
+productInfo[0]. Men's Philadel string            true    "商品0 - 名称"
+name            phia Eagles #6
+                2
+
+productInfo[0]. Size: (Men) XL string            true    "商品0 - 规格"
+option
+
+productInfo[0]. 44.00             string         true    "商品0 - 单价"
+price
+
+productInfo[0]. 1                 integer        true    "商品0 - 名称"
+quantity
+
+productInfo[0]. https://www.s     string         true    "商品0 - 链接"
+url             portsjerseyhu
+                b.com/nfl-men
+                s-nike-philade
+
+
+                                       13 / 21
+               lphia-eagles-1
+               7-nelson-agho
+               lor-stitched-gr
+               een-olive-salu
+               te-to-service-k
+               o-performance
+               -hoodie-p-513
+               1.html
+
+productInfo[0]. https://www.s    string         true   "商品0 - 图⽚"
+image_url       portsjerseyhu
+                b.com/bmz_ca
+               che/p/philadel
+               phia-eagles-8t
+               ve35xdjpg.ima
+               ge.580x580.jpg
+
+client_agent   json格式转字  string                 true   客户端信息
+               符串，参考4.2.
+               3.1
+
+currency       USD               string         true   交易货币
+
+card           json格式转字          string         true   卡号信息
+               符串
+
+card.expiredYe 27                string         true   卡-过期年份
+ar
+
+card.expiredM 10                 string         true   卡-过期⽉份
+onth
+
+card.cardNum   556150751791 string              true   卡-卡号
+ber            4457
+
+card.cardholde Garcia Hawkin string             true   卡-持有⼈
+r              g
+
+card.cvv       580               string         true   卡-验证编号
+
+payType        0                 string         true   ⽀付类型
+
+paySource      0                 string         true   ⽀付来源 0-未
+                                                       知，1-wp，2-s
+                                                       hopyy 3-shopl
+                                                       azza
+
+响应参数列表：JSON格式
+
+
+                                      14 / 21
+NAME                      VALUE                     DESCRITION
+
+code                      1                         状态码：1-成功，其他数
+                                                    值-失败
+
+show                      0                         前端是否显⽰
+
+msg                       成功                        返回信息
+
+data                                                返回数据
+
+data.billDescription      127.0.0.1                 账单描述
+data.message              successful transaction    ⽀付消息
+
+data.redirectUrl          "{{host}}/api/redirect"   payCode=301时，需跳转
+
+data.timestamp            1767508879609             时间戳，毫秒
+
+data.transactionAmount    29.67                     交易⾦额
+
+data.transactionAt        2026-01-04 14:41:19       交易时间
+
+data.transactionCardNum 428836 * * * * * *0652      卡号
+ber
+
+data.transactionCurrency USD                        交易货币
+
+data.transactionId        202601041441148266        交易订单号
+
+data.transactionMessage   Approved                  交易信息
+
+data.uniqueId             2007703874002071553       通道订单号
+data.timestamp_f          2026-01-04 14:41:19       时间戳格式化
+
+data.orderSn              14030                     商户订单号
+
+data.payCode              100                       ⽀付状态码payCode
+
+data.payStatus            1                         订单状态：1成功，其他异
+                                                    常
+
+data.sign                 f95a8ce14e975a33296a9e    签名字符串
+                          bf29c8622d
+
+4.2.3.1 client_agent
+
+
+           参考代码
+
+       1   cont getClientInfo = function(e) {
+       2       // 1. 操作系统检测（优先navigator.platform，降级到userAgent
+           分析）
+       3       const platform = navigator.platform || '';
+
+
+                                      15 / 21
+ 4       let os = 'Unknown';
+ 5       if (platform.includes('Win')) os = 'Windows';
+ 6       else if (platform.includes('Mac')) os = 'MacOS';
+ 7       else if (platform.includes('Linux')) os = 'Linux';
+ 8       else if (/iPhone|iPad|iPod/.test(navigator.userAgent))
+     os = 'iOS';
+ 9       else if (/Android/.test(navigator.userAgent)) os =
+     'Android';
+10
+11       // 2. 浏览器类型检测（多层逻辑兼容Edge/IE/新内核浏览器）
+12       const ua = navigator.userAgent;
+13       let browser = 'Unknown';
+14       if (ua.includes('Edg/')) browser = 'Microsoft Edge';
+15       else if (ua.includes('OPR/')) browser = 'Opera';
+16       else if (ua.includes('Chrome') &&
+     !ua.includes('Edg/')) browser = 'Google Chrome';
+17       else if (ua.includes('Firefox')) browser = 'Mozilla
+     Firefox';
+18       else if (ua.includes('Safari') &&
+     !ua.includes('Chrome')) browser = 'Apple Safari';
+19       else if (document.documentMode) browser = 'Internet
+     Explorer'; // 兼容IE10/11[5](@ref)
+20
+21       // 3. 浏览器语⾔（优先navigator.languages[0]）
+22       const language = (navigator.languages &&
+     navigator.languages[0]) ||
+23           navigator.language ||
+24           navigator.userLanguage || // IE兼容
+25           'en-US' // [6,7](@ref);
+26
+27       // 4. 时区（标准化IANA时区标识）
+28       const timeZone =
+     Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+29
+30       // 5. 屏幕分辨率（区分物理分辨率与视⼝分辨率）
+31       const screenResolution = {
+32           physical: { width: screen.width, height:
+     screen.height },
+33           viewport: { width: window.innerWidth, height:
+     window.innerHeight },
+
+
+
+
+                               16 / 21
+34            dpi: window.devicePixelRatio || 1, // ⾼DPI设备⽀持
+     [11](@ref)
+35            physicalString: screen.width + '*' +
+     screen.height,
+36            viewportString: window.innerWidth + '*' +
+     window.innerHeight
+37       };
+38
+39       // 6. 当前⽹址（兼容IE9+）
+40       const currentUrl = window.location.href; // 或
+     document.URL[13,14](@ref)
+41
+42       // 7. 域名
+43       const domain = window.location.hostname || '';
+44
+45       // 8. UserAgent
+46       const userAgent = navigator.userAgent || '';
+47
+48       // 9. Cookies
+49       let cookie = document.cookie || '';
+50
+51       return { os, browser, language, timeZone,
+     screenResolution, currentUrl, domain, userAgent, cookie };
+52   }
+
+
+
+     需要格式化成字符串上传
+
+ 1   {
+ 2       "os": "MacOS",
+ 3       "browser": "Google Chrome",
+ 4       "language": "zh-CN",
+ 5       "timeZone": "Asia/Shanghai",
+ 6       "screenResolution": {
+ 7            "physical": {
+ 8                 "width": 2560,
+ 9                 "height": 1600
+10            },
+11            "viewport": {
+12                 "width": 1066,
+13                 "height": 1165
+
+
+                                17 / 21
+   14            },
+   15            "dpi": 0.800000011920929,
+   16            "physicalString": "2560*1600",
+   17            "viewportString": "1066*1165"
+   18       },
+   19       "currentUrl": "https://dev.pay.com/test/index.html",
+   20       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X
+        10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)
+        Chrome/138.0.0.0 Safari/537.36",
+   21       "cookie": {
+   22            "user": "Shuan"
+   23       },
+   24       "httpAcceptContent":
+        "text/html,application/xhtml+xml,application/xml;q=0.9,ima
+        ge/avif,image/webp,image/apng,*/*;q=0.8,application/signed
+        -exchange;v=b3;q=0.7",
+   25       "browserJavaEnabled": "false",
+   26       "browserJavascriptEnabled": "true",
+   27       "screenColorDepth": "24"
+   28   }
+
+
+
+
+4.2.3.2、成功响应
+
+    1   {
+    2       "code": 1,
+    3       "show": 0,
+    4       "msg": "",
+    5       "data": {
+    6            "billDescription": "127.0.0.1",
+    7            "message": "successful transaction",
+    8            "redirectUrl": "",
+    9            "timestamp": 1767508879609,
+   10            "transactionAmount": "29.67",
+   11            "transactionAt": "2026-01-04 14:41:19",
+   12            "transactionCardNumber": "428836******0652",
+   13            "transactionCurrency": "USD",
+   14            "transactionId": "202601041441148266",
+   15            "transactionMessage": "Approved",
+
+
+                                   18 / 21
+   16             "uniqueId": "2007703874002071553",
+   17             "timestamp_f": "2026-01-04 14:41:19",
+   18             "orderSn": "14030",
+   19             "payCode": 100,
+   20             "payStatus": 1,
+   21             "sign": "f95a8ce14e975a33296a9ebf29c8622d",
+   22         }
+   23    }
+   24
+
+
+
+4.2.3.3、失败响应
+
+   1    {
+   2          "code": 0,
+   3          "show": 0,
+   4          "msg": "Sign Error!",
+   5          "data": []
+   6    }
+
+
+
+
+4.2.4、回调通知
+
+        请求⽅法：POST
+
+        回调通知后，请回复SUCCESS，⾸次通知未收到SUCCESS，会每间隔5分
+        钟，继续发送5次。
+
+请求参数列表：
+
+    1    {
+    2        "appId": 123456, // 商户号
+    3        "uniqueId": "1669548151356891137", // 上游交易系统返回唯⼀交
+         易 ID
+    4        "billDescription": "Description", // 账单信息
+    5        "message": "successful transaction", // 普通返回信息
+    6        "timestamp": 1686886273516, // 返回时间戳
+    7        "transactionAmount": "8.88", // 交易⾦额
+    8        "transactionAt": "2023-06-16 11:31:12", // 交易时间
+    9        "transactionCardNumber": "420000******0000", // 交易卡号,
+         前六后四
+
+
+                                      19 / 21
+   10         "transactionCurrency": "USD", // 交易币种(CNY/USD)
+   11         "transactionId": "123456", // 本平台向上游⽀付系统提交 商户⽀
+          付唯⼀ ID
+   12         "transactionMessage": "Approved", // 交易错误信息,可能是渠道
+          直接返回的错误信息
+   13         "sign":
+          "e174c6dfe718102805262085d83e11aa78f4e2c8df385e3acb4705662
+          74de2f5", // 详⻅签名规则
+   14         "orderSn": "876543210987654312121212121", // 对接本平台提交
+          上来的订单号
+   15         "payStatus": "1", // ⽀付状态：0-待⽀付；1-已⽀付，2⽀付失败，
+   16         "payCode": 101 // 回码,详⻅payCode
+   17     }
+
+
+
+
+4.2.5、查询订单
+
+请求地址： /api/SaaSPay/search
+
+请求⽅法：GET
+
+请求参数列表：
+
+
+                                                          DESCRIPTIO
+NAME              VALUE         TYPE           REQUIRED
+                                                          N
+transactionId     202501121927 string          true       商户⽀付唯⼀I
+                  243303                                  D
+orderSn           876543431212 string          true       商户提交的订
+                  1212121                                 单号
+
+appId             8k7...x1m     string         true       我⽅提供的应
+                                                          ⽤ID
+
+sign              f95a8ce14e975 string         true       md5签名值
+                  a33296a9ebf29
+                  c8622d
+
+响应参数列表：JSON格式
+
+
+
+
+                                     20 / 21
+NAME                      VALUE                    DESCRITION
+
+code                      1                        状态码：1-成功，其他数
+                                                   值-失败
+
+show                      0                        前端是否显⽰
+
+msg                       成功                       返回信息
+
+data                                               返回数据
+
+data.billDescription      127.0.0.1                账单描述
+data.message              successful transaction   ⽀付消息
+
+data.timestamp            1767508879609            时间戳，毫秒
+
+data.transactionAmount    29.67                    交易⾦额
+
+data.transactionAt        2026-01-04 14:41:19      交易时间
+
+data.transactionCardNum 428836 * * * * * *0652     卡号
+ber
+
+data.transactionCurrency USD                       交易货币
+
+data.transactionId        202601041441148266       交易订单号
+
+data.transactionMessage   Approved                 交易信息
+
+data.uniqueId             2007703874002071553      通道订单号
+
+data.orderSn              14030                    商户订单号
+data.payCode              100                      ⽀付状态码payCode
+
+data.payStatus            1                        订单状态：1成功，其他异
+                                                   常
+
+s
+
+
+
+
+                                      21 / 21
+

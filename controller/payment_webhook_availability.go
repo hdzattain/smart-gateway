@@ -108,3 +108,17 @@ func isEpayWebhookConfigured() bool {
 func isEpayWebhookEnabled() bool {
 	return isEpayTopUpEnabled()
 }
+
+func isLongyueTopUpEnabled() bool {
+	if !isPaymentComplianceConfirmed() {
+		return false
+	}
+	return setting.LongyueEnabled &&
+		strings.TrimSpace(setting.LongyueAppId) != "" &&
+		strings.TrimSpace(setting.LongyueSecretKey) != "" &&
+		strings.TrimSpace(setting.LongyueApiBase) != ""
+}
+
+func isLongyueWebhookEnabled() bool {
+	return isLongyueTopUpEnabled()
+}

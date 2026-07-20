@@ -40,6 +40,7 @@ export type PaymentResponse = ApiResponse<Record<string, unknown>> & {
 }
 export type StripePaymentResponse = ApiResponse<{ pay_link: string }>
 export type MCTPayPaymentResponse = ApiResponse<{ pay_link: string }>
+export type LongyuePaymentResponse = ApiResponse<{ pay_link: string }>
 export type AffiliateCodeResponse = ApiResponse<string>
 export type AffiliateTransferResponse = ApiResponse
 export type CreemPaymentResponse = ApiResponse<{ checkout_url: string }>
@@ -155,6 +156,12 @@ export interface TopupInfo {
   enable_waffo_pancake_topup?: boolean
   /** Minimum topup amount for Waffo Pancake */
   waffo_pancake_min_topup?: number
+  /** Whether Longyue card topup is enabled */
+  longyue_enabled?: boolean
+  /** Longyue unit price (local currency / USD) */
+  longyue_unit_price?: number
+  /** Minimum topup amount for Longyue */
+  longyue_min_topup?: number
   /** Whether redemption code usage is enabled */
   enable_redemption?: boolean
   /** Whether compliance confirmation has been completed */
@@ -207,6 +214,16 @@ export interface WaffoPaymentRequest {
 export interface WaffoPancakePaymentRequest {
   /** Topup amount */
   amount: number
+}
+
+/**
+ * Longyue payment request parameters
+ */
+export interface LongyuePaymentRequest {
+  /** Topup amount */
+  amount: number
+  /** Payment method identifier */
+  payment_method: 'longyue'
 }
 
 /**

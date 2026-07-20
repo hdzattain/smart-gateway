@@ -41,6 +41,7 @@ import {
   paySubscriptionCreem,
   paySubscriptionEpay,
   paySubscriptionWaffoPancake,
+  paySubscriptionLongyue,
   paySubscriptionBalance,
 } from '../../api'
 import { formatDuration, formatResetPeriod } from '../../lib'
@@ -58,6 +59,7 @@ interface Props {
   enableStripe?: boolean
   enableCreem?: boolean
   enableWaffoPancake?: boolean
+  enableLongyue?: boolean
   enableOnlineTopUp?: boolean
   epayMethods?: PaymentMethod[]
   purchaseLimit?: number
@@ -87,9 +89,11 @@ export function SubscriptionPurchaseDialog(props: Props) {
   const hasCreem = props.enableCreem && !!plan.creem_product_id
   const hasWaffoPancake =
     props.enableWaffoPancake && !!plan.waffo_pancake_product_id
+  const hasLongyue = props.enableLongyue && !!plan.longyue_product_id
   const hasEpay =
     props.enableOnlineTopUp && (props.epayMethods || []).length > 0
-  const hasAnyPayment = hasStripe || hasCreem || hasWaffoPancake || hasEpay
+  const hasAnyPayment =
+    hasStripe || hasCreem || hasWaffoPancake || hasLongyue || hasEpay
   const selectedEpayMethodLabel =
     (props.epayMethods || []).find((m) => m.type === selectedEpayMethod)
       ?.name ||
@@ -174,6 +178,28 @@ export function SubscriptionPurchaseDialog(props: Props) {
       }
     } catch {
       toast.error(t('Payment request failed'))
+    } finally {
+      setPaying(false)
+    }
+  }
+
+  const handlePayLongyue = async () => {
+    setPaying(true)
+    try {
+      const res = await paySubscriptionLongyue({ plan_id: plan.id })
+      if (res.message === 'success' && res.data?.pay_link) {
+        window.open(res.data.pay_link, '_blank')
+        toast.success(t('Redirecting to Longyue checkout...'))
+        props.onOpenChange(false)
+      } else {
+        toast.error(
+          res.message && res.message !== 'success'
+            ? res.message
+            : t('Longyue payment request failed')
+        )
+      }
+    } catch {
+      toast.error(t('Longyue payment request failed'))
     } finally {
       setPaying(false)
     }
@@ -366,7 +392,7 @@ export function SubscriptionPurchaseDialog(props: Props) {
             <p className='text-muted-foreground text-xs'>
               {t('Select payment method')}
             </p>
-            {(hasStripe || hasCreem || hasWaffoPancake) && (
+            {(hasStripe || hasCreem || hasWaffoPancake || hasLongyue) && (
               <div className='grid grid-cols-2 gap-2 sm:flex'>
                 {hasStripe && (
                   <Button
@@ -396,6 +422,16 @@ export function SubscriptionPurchaseDialog(props: Props) {
                     disabled={paying || limitReached}
                   >
                     Waffo Pancake
+                  </Button>
+                )}
+                {hasLongyue && (
+                  <Button
+                    variant='outline'
+                    className='flex-1'
+                    onClick={handlePayLongyue}
+                    disabled={paying || limitReached}
+                  >
+                    {t('Longyue Card')}
                   </Button>
                 )}
               </div>

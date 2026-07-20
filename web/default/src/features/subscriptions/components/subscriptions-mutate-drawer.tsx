@@ -677,6 +677,20 @@ export function SubscriptionsMutateDrawer({
 
               <FormField
                 control={form.control}
+                name='longyue_product_id'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('Longyue Product ID')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder='ly_prod_...' />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name='waffo_pancake_product_id'
                 render={({ field }) => {
                   // Raw-ID fallback for IDs not yet in the catalog.

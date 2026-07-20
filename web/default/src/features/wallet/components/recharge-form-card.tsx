@@ -78,6 +78,10 @@ interface RechargeFormCardProps {
   waffoMinTopup?: number
   onWaffoMethodSelect?: (method: WaffoPayMethod, index: number) => void
   enableWaffoPancakeTopup?: boolean
+  enableLongyueTopup?: boolean
+  longyueMinTopup?: number
+  longyueProcessing?: boolean
+  onLongyuePay?: () => void
 }
 
 export function RechargeFormCard({
@@ -108,6 +112,10 @@ export function RechargeFormCard({
   waffoMinTopup,
   onWaffoMethodSelect,
   enableWaffoPancakeTopup,
+  enableLongyueTopup,
+  longyueMinTopup,
+  longyueProcessing,
+  onLongyuePay,
 }: RechargeFormCardProps) {
   const { t } = useTranslation()
   const [localAmount, setLocalAmount] = useState(topupAmount.toString())
@@ -128,7 +136,8 @@ export function RechargeFormCard({
     topupInfo?.enable_online_topup ||
     topupInfo?.enable_stripe_topup ||
     enableWaffoTopup ||
-    enableWaffoPancakeTopup
+    enableWaffoPancakeTopup ||
+    enableLongyueTopup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
   const hasStandardPaymentMethods =
     Array.isArray(topupInfo?.pay_methods) && topupInfo.pay_methods.length > 0
@@ -351,7 +360,7 @@ export function RechargeFormCard({
                       )
                     })}
                   </div>
-                ) : hasWaffoPaymentMethods ? null : (
+                ) : hasWaffoPaymentMethods || enableLongyueTopup ? null : (
                   <Alert>
                     <AlertDescription>
                       {t(
@@ -416,6 +425,50 @@ export function RechargeFormCard({
                     </div>
                   </div>
                 )}
+              {enableLongyueTopup && onLongyuePay && (
+                <div className='space-y-2.5 sm:space-y-3'>
+                  <Label className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
+                    {t('Longyue Card Payment')}
+                  </Label>
+                  <div className='grid grid-cols-2 gap-1.5 sm:gap-3 lg:grid-cols-3'>
+                    {(() => {
+                      const longyueMin = longyueMinTopup || 0
+                      const belowMin = longyueMin > topupAmount
+
+                      const button = (
+                        <Button
+                          variant='outline'
+                          onClick={onLongyuePay}
+                          disabled={belowMin || !!longyueProcessing}
+                          className='h-9 min-w-0 justify-start gap-2 rounded-lg px-3'
+                        >
+                          {longyueProcessing ? (
+                            <Loader2 className='h-4 w-4 animate-spin' />
+                          ) : (
+                            getPaymentIcon('longyue')
+                          )}
+                          <span className='truncate'>{t('Longyue Card')}</span>
+                        </Button>
+                      )
+
+                      return belowMin ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger render={button}></TooltipTrigger>
+                            <TooltipContent>
+                              {t('Minimum topup amount: {{amount}}', {
+                                amount: longyueMin,
+                              })}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        button
+                      )
+                    })()}
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>

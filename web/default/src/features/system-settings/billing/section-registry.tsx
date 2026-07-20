@@ -159,6 +159,13 @@ const BILLING_SECTIONS = [
           CreemWebhookSecret: settings.CreemWebhookSecret,
           CreemTestMode: settings.CreemTestMode,
           CreemProducts: settings.CreemProducts,
+          LongyueEnabled: settings.LongyueEnabled ?? false,
+          LongyueAppId: settings.LongyueAppId ?? '',
+          LongyueSecretKey: settings.LongyueSecretKey ?? '',
+          LongyueApiBase: settings.LongyueApiBase ?? '',
+          LongyueUnitPrice: settings.LongyueUnitPrice ?? 1,
+          LongyueMinTopUp: settings.LongyueMinTopUp ?? 1,
+          LongyueCurrency: settings.LongyueCurrency ?? 'USD',
         }}
         waffoDefaultValues={{
           WaffoEnabled: settings.WaffoEnabled ?? false,

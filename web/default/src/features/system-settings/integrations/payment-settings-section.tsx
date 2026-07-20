@@ -174,6 +174,17 @@ const paymentSchema = z.object({
   WaffoPancakeMerchantID: z.string(),
   WaffoPancakePrivateKey: z.string(),
   WaffoPancakeReturnURL: z.string(),
+  LongyueEnabled: z.boolean(),
+  LongyueAppId: z.string(),
+  LongyueSecretKey: z.string(),
+  LongyueApiBase: z.string().refine((value) => {
+    const trimmed = value.trim()
+    if (!trimmed) return true
+    return /^https?:\/\//.test(trimmed)
+  }, 'Provide a valid URL starting with http:// or https://'),
+  LongyueUnitPrice: z.coerce.number().min(0),
+  LongyueMinTopUp: z.coerce.number().min(1),
+  LongyueCurrency: z.string(),
 })
 
 type PaymentFormValues = z.infer<typeof paymentSchema>
@@ -461,6 +472,13 @@ export function PaymentSettingsSection({
       WaffoPancakeReturnURL: removeTrailingSlash(
         values.WaffoPancakeReturnURL.trim()
       ),
+      LongyueEnabled: values.LongyueEnabled,
+      LongyueAppId: values.LongyueAppId.trim(),
+      LongyueSecretKey: values.LongyueSecretKey.trim(),
+      LongyueApiBase: removeTrailingSlash(values.LongyueApiBase.trim()),
+      LongyueUnitPrice: values.LongyueUnitPrice,
+      LongyueMinTopUp: values.LongyueMinTopUp,
+      LongyueCurrency: values.LongyueCurrency.trim() || 'USD',
     }
 
     const initial = {
@@ -519,6 +537,15 @@ export function PaymentSettingsSection({
       WaffoPancakeReturnURL: removeTrailingSlash(
         initialRef.current.WaffoPancakeReturnURL.trim()
       ),
+      LongyueEnabled: initialRef.current.LongyueEnabled,
+      LongyueAppId: initialRef.current.LongyueAppId.trim(),
+      LongyueSecretKey: initialRef.current.LongyueSecretKey.trim(),
+      LongyueApiBase: removeTrailingSlash(
+        initialRef.current.LongyueApiBase.trim()
+      ),
+      LongyueUnitPrice: initialRef.current.LongyueUnitPrice,
+      LongyueMinTopUp: initialRef.current.LongyueMinTopUp,
+      LongyueCurrency: initialRef.current.LongyueCurrency.trim() || 'USD',
     }
 
     const updates: Array<{ key: string; value: string | number | boolean }> = []
@@ -751,6 +778,34 @@ export function PaymentSettingsSection({
       normalizeJsonForComparison(initial.WaffoPayMethods)
     ) {
       updates.push({ key: 'WaffoPayMethods', value: sanitized.WaffoPayMethods })
+    }
+
+    if (sanitized.LongyueEnabled !== initial.LongyueEnabled) {
+      updates.push({ key: 'LongyueEnabled', value: sanitized.LongyueEnabled })
+    }
+
+    if (sanitized.LongyueAppId !== initial.LongyueAppId) {
+      updates.push({ key: 'LongyueAppId', value: sanitized.LongyueAppId })
+    }
+
+    if (sanitized.LongyueSecretKey) {
+      updates.push({ key: 'LongyueSecretKey', value: sanitized.LongyueSecretKey })
+    }
+
+    if (sanitized.LongyueApiBase !== initial.LongyueApiBase) {
+      updates.push({ key: 'LongyueApiBase', value: sanitized.LongyueApiBase })
+    }
+
+    if (sanitized.LongyueUnitPrice !== initial.LongyueUnitPrice) {
+      updates.push({ key: 'LongyueUnitPrice', value: sanitized.LongyueUnitPrice })
+    }
+
+    if (sanitized.LongyueMinTopUp !== initial.LongyueMinTopUp) {
+      updates.push({ key: 'LongyueMinTopUp', value: sanitized.LongyueMinTopUp })
+    }
+
+    if (sanitized.LongyueCurrency !== initial.LongyueCurrency) {
+      updates.push({ key: 'LongyueCurrency', value: sanitized.LongyueCurrency })
     }
 
     const hasWaffoPancakeChanges =
@@ -1748,6 +1803,172 @@ export function PaymentSettingsSection({
                 </FormItem>
               )}
             />
+          </div>
+
+          <Separator />
+
+          <div className='space-y-4'>
+            <div>
+              <h3 className='text-lg font-medium'>{t('Longyue Gateway')}</h3>
+              <p className='text-muted-foreground text-sm'>
+                {t('Configuration for Longyue card payment integration')}
+              </p>
+            </div>
+
+            <FormField
+              control={form.control}
+              name='LongyueEnabled'
+              render={({ field }) => (
+                <SettingsSwitchItem>
+                  <SettingsSwitchContent>
+                    <FormLabel>{t('Enable Longyue')}</FormLabel>
+                    <FormDescription>
+                      {t('Allow users to top up through Longyue card payment')}
+                    </FormDescription>
+                  </SettingsSwitchContent>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </SettingsSwitchItem>
+              )}
+            />
+
+            <div className='grid gap-6 md:grid-cols-3'>
+              <FormField
+                control={form.control}
+                name='LongyueAppId'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('Longyue merchant AppID')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t('Enter Longyue merchant AppID')}
+                        autoComplete='off'
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='LongyueSecretKey'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('Longyue secret key')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='password'
+                        placeholder={t('Enter new key to update')}
+                        autoComplete='new-password'
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Leave blank unless rotating the secret')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='LongyueApiBase'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('Longyue API base URL')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='https://api.longyue.example.com'
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('API endpoint provided by Longyue')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className='grid gap-6 md:grid-cols-3'>
+              <FormField
+                control={form.control}
+                name='LongyueUnitPrice'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t('Unit price (local currency / USD)')}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='0.01'
+                        min={0}
+                        {...safeNumberFieldProps(field)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('e.g., 1 means 1 local currency per USD')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='LongyueMinTopUp'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('Minimum top-up (USD)')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='1'
+                        min={1}
+                        {...safeNumberFieldProps(field)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Minimum recharge amount in USD')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='LongyueCurrency'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('Longyue settlement currency')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='USD'
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Currency code used for Longyue settlement')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
 
           <Separator />

@@ -169,6 +169,13 @@ export function useSubscriptionsColumns(): ColumnDef<PlanRecord>[] {
                   copyable={false}
                 />
               )}
+              {plan.longyue_product_id && (
+                <StatusBadge
+                  label={t('Longyue Card')}
+                  variant='neutral'
+                  copyable={false}
+                />
+              )}
             </div>
           )
         },

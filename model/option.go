@@ -121,6 +121,13 @@ func InitOptionMap() {
 	common.OptionMap["WaffoPancakeMinTopUp"] = strconv.Itoa(setting.WaffoPancakeMinTopUp)
 	common.OptionMap["WaffoPancakeStoreID"] = setting.WaffoPancakeStoreID
 	common.OptionMap["WaffoPancakeProductID"] = setting.WaffoPancakeProductID
+	common.OptionMap["LongyueEnabled"] = strconv.FormatBool(setting.LongyueEnabled)
+	common.OptionMap["LongyueAppId"] = setting.LongyueAppId
+	common.OptionMap["LongyueSecretKey"] = setting.LongyueSecretKey
+	common.OptionMap["LongyueApiBase"] = setting.LongyueApiBase
+	common.OptionMap["LongyueUnitPrice"] = strconv.FormatFloat(setting.LongyueUnitPrice, 'f', -1, 64)
+	common.OptionMap["LongyueMinTopUp"] = strconv.Itoa(setting.LongyueMinTopUp)
+	common.OptionMap["LongyueCurrency"] = setting.LongyueCurrency
 	common.OptionMap["TopupGroupRatio"] = common.TopupGroupRatio2JSONString()
 	common.OptionMap["Chats"] = setting.Chats2JsonString()
 	common.OptionMap["AutoGroups"] = setting.AutoGroups2JsonString()
@@ -431,6 +438,20 @@ func updateOptionMap(key string, value string) (err error) {
 		setting.MCTPayUnitPrice, _ = strconv.ParseFloat(value, 64)
 	case "MCTPayMinTopUp":
 		setting.MCTPayMinTopUp, _ = strconv.Atoi(value)
+	case "LongyueEnabled":
+		setting.LongyueEnabled = value == "true"
+	case "LongyueAppId":
+		setting.LongyueAppId = value
+	case "LongyueSecretKey":
+		setting.LongyueSecretKey = value
+	case "LongyueApiBase":
+		setting.LongyueApiBase = value
+	case "LongyueUnitPrice":
+		setting.LongyueUnitPrice, _ = strconv.ParseFloat(value, 64)
+	case "LongyueMinTopUp":
+		setting.LongyueMinTopUp, _ = strconv.Atoi(value)
+	case "LongyueCurrency":
+		setting.LongyueCurrency = value
 	case "CreemApiKey":
 		setting.CreemApiKey = value
 	case "CreemProducts":

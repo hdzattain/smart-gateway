@@ -30,6 +30,7 @@ const (
 	PaymentMethodCreem        = "creem"
 	PaymentMethodWaffo        = "waffo"
 	PaymentMethodWaffoPancake = "waffo_pancake"
+	PaymentMethodLongyue      = "longyue"
 	PaymentMethodBalance      = "balance"
 )
 
@@ -40,6 +41,7 @@ const (
 	PaymentProviderCreem        = "creem"
 	PaymentProviderWaffo        = "waffo"
 	PaymentProviderWaffoPancake = "waffo_pancake"
+	PaymentProviderLongyue      = "longyue"
 	PaymentProviderBalance      = "balance"
 )
 

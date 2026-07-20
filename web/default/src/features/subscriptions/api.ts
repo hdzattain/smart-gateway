@@ -129,6 +129,13 @@ export async function paySubscriptionWaffoPancake(
   return res.data
 }
 
+export async function paySubscriptionLongyue(
+  data: SubscriptionPayRequest
+): Promise<SubscriptionPayResponse> {
+  const res = await api.post('/api/subscription/longyue/pay', data)
+  return res.data
+}
+
 export async function paySubscriptionBalance(
   data: SubscriptionPayRequest
 ): Promise<SubscriptionPayResponse> {

@@ -39,6 +39,7 @@ import {
   useCreemPayment,
   useWaffoPayment,
   useWaffoPancakePayment,
+  useLongyuePayment,
 } from './hooks'
 import {
   getDefaultPaymentType,
@@ -102,6 +103,8 @@ export function Wallet(props: WalletProps) {
   const { processWaffoPayment } = useWaffoPayment()
   const { processing: pancakeProcessing, processWaffoPancakePayment } =
     useWaffoPancakePayment()
+  const { processing: longyueProcessing, processLongyuePayment } =
+    useLongyuePayment()
 
   // Fetch and refresh user data
   const fetchUser = useCallback(async () => {
@@ -245,6 +248,14 @@ export function Wallet(props: WalletProps) {
     }
   }
 
+  // Handle Longyue payment
+  const handleLongyuePay = async () => {
+    const success = await processLongyuePayment(topupAmount)
+    if (success) {
+      await fetchUser()
+    }
+  }
+
   // Get discount rate for current topup amount
   const getDiscountRate = useCallback(() => {
     return topupInfo?.discount?.[topupAmount] || DEFAULT_DISCOUNT_RATE
@@ -303,6 +314,10 @@ export function Wallet(props: WalletProps) {
                   enableWaffoPancakeTopup={
                     topupInfo?.enable_waffo_pancake_topup
                   }
+                  enableLongyueTopup={topupInfo?.longyue_enabled}
+                  longyueMinTopup={topupInfo?.longyue_min_topup}
+                  longyueProcessing={longyueProcessing}
+                  onLongyuePay={handleLongyuePay}
                 />
               </div>
 

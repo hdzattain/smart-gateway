@@ -267,6 +267,13 @@ export type BillingSettings = {
   WaffoPancakeMerchantID: string
   WaffoPancakePrivateKey: string
   WaffoPancakeReturnURL: string
+  LongyueEnabled: boolean
+  LongyueAppId: string
+  LongyueSecretKey: string
+  LongyueApiBase: string
+  LongyueUnitPrice: number
+  LongyueMinTopUp: number
+  LongyueCurrency: string
   // Bound by the operator through the catalog flow in the admin Pancake
   // section (saved via /api/option/waffo-pancake/save).
   WaffoPancakeStoreID: string

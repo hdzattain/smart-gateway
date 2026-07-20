@@ -115,6 +115,27 @@ func GetTopUpInfo(c *gin.Context) {
 		}
 	}
 
+	// 如果启用了龙跃支付，添加到支付方法列表
+	if isLongyueTopUpEnabled() {
+		hasLongyue := false
+		for _, method := range payMethods {
+			if method["type"] == model.PaymentMethodLongyue {
+				hasLongyue = true
+				break
+			}
+		}
+
+		if !hasLongyue {
+			longyueMethod := map[string]string{
+				"name":      "Longyue Pay",
+				"type":      model.PaymentMethodLongyue,
+				"color":     "#DC2626",
+				"min_topup": strconv.Itoa(setting.LongyueMinTopUp),
+			}
+			payMethods = append(payMethods, longyueMethod)
+		}
+	}
+
 	data := gin.H{
 		"enable_online_topup":              isEpayTopUpEnabled(),
 		"enable_stripe_topup":              isStripeTopUpEnabled(),
@@ -122,6 +143,7 @@ func GetTopUpInfo(c *gin.Context) {
 		"enable_creem_topup":               isCreemTopUpEnabled(),
 		"enable_waffo_topup":               enableWaffo,
 		"enable_waffo_pancake_topup":       enableWaffoPancake,
+		"enable_longyue_topup":             isLongyueTopUpEnabled(),
 		"enable_redemption":                complianceConfirmed,
 		"payment_compliance_confirmed":     complianceConfirmed,
 		"payment_compliance_terms_version": operation_setting.CurrentComplianceTermsVersion,
@@ -138,6 +160,8 @@ func GetTopUpInfo(c *gin.Context) {
 		"mct_pay_min_topup":       setting.MCTPayMinTopUp,
 		"waffo_min_topup":         setting.WaffoMinTopUp,
 		"waffo_pancake_min_topup": setting.WaffoPancakeMinTopUp,
+		"longyue_min_topup":       setting.LongyueMinTopUp,
+		"longyue_unit_price":      setting.LongyueUnitPrice,
 		"amount_options":          operation_setting.GetPaymentSetting().AmountOptions,
 		"discount":                operation_setting.GetPaymentSetting().AmountDiscount,
 		"topup_link":              common.TopUpLink,

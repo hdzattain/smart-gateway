@@ -91,6 +91,17 @@ export function isWaffoPancakePayment(paymentType: string): boolean {
 }
 
 /**
+ * Check if payment method is Longyue
+ *
+ * Longyue is a hosted card checkout that goes through a dedicated pay_link
+ * flow rather than the generic epay form submission, so it must be
+ * special-cased in payment dispatch logic.
+ */
+export function isLongyuePayment(paymentType: string): boolean {
+  return paymentType === PAYMENT_TYPES.LONGYUE
+}
+
+/**
  * Get default payment type from topup info
  */
 export function getDefaultPaymentType(topupInfo: TopupInfo | null): string {
@@ -117,6 +128,10 @@ export function getDefaultPaymentType(topupInfo: TopupInfo | null): string {
 
   if (topupInfo.enable_waffo_pancake_topup) {
     return PAYMENT_TYPES.WAFFO_PANCAKE
+  }
+
+  if (topupInfo.longyue_enabled) {
+    return PAYMENT_TYPES.LONGYUE
   }
 
   return DEFAULT_PAYMENT_TYPE
@@ -148,6 +163,10 @@ export function getMinTopupAmount(topupInfo: TopupInfo | null): number {
 
   if (topupInfo.enable_waffo_pancake_topup) {
     return topupInfo.waffo_pancake_min_topup || DEFAULT_MIN_TOPUP
+  }
+
+  if (topupInfo.longyue_enabled) {
+    return topupInfo.longyue_min_topup || DEFAULT_MIN_TOPUP
   }
 
   return DEFAULT_MIN_TOPUP
