@@ -195,7 +195,7 @@ export async function requestWaffoPancakePayment(
 export async function calculateLongyueAmount(
   request: LongyuePaymentRequest
 ): Promise<AmountResponse> {
-  const res = await api.post('/api/user/self/longyue/amount', request, {
+  const res = await api.post('/api/user/longyue/amount', request, {
     skipBusinessError: true,
   } as Record<string, unknown>)
   return res.data
@@ -207,7 +207,7 @@ export async function calculateLongyueAmount(
 export async function requestLongyuePayment(
   request: LongyuePaymentRequest
 ): Promise<LongyuePaymentResponse> {
-  const res = await api.post('/api/user/self/longyue/pay', request, {
+  const res = await api.post('/api/user/longyue/pay', request, {
     skipBusinessError: true,
   } as Record<string, unknown>)
   return res.data

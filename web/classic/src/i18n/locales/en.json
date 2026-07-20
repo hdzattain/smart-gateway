@@ -3827,6 +3827,25 @@
     "并确认自行承担部署": "confirm that I bear legal responsibility arising from deployment",
     "运营和收费行为产生的法律责任": "operation and charging behavior",
     "，": ", ",
-    "、": ", "
+    "、": ", ",
+    "龙跃外卡": "Longyue Card",
+    "龙跃外卡设置": "Longyue Card Settings",
+    "龙跃外卡收单系统（CNP），支持国际信用卡支付，用户将跳转到龙跃收银台完成支付。": "Longyue card acquiring system (CNP) supports international credit card payments. Users will be redirected to the Longyue checkout page to complete the payment.",
+    "启用龙跃外卡支付": "Enable Longyue card payment",
+    "商户 AppID": "Merchant AppID",
+    "请输入龙跃商户 AppID": "Please enter the Longyue merchant AppID",
+    "签名密钥": "Signature Key",
+    "API 基础地址": "API Base URL",
+    "例如：https://pay.example.com": "e.g. https://pay.example.com",
+    "结算货币": "Settlement Currency",
+    "例如：USD": "e.g. USD",
+    "充值价格（结算货币/美金）": "Top-up price (settlement currency/USD)",
+    "例如：1，就是1结算货币/美金": "e.g. 1 means 1 unit of settlement currency per USD",
+    "更新龙跃外卡设置": "Update Longyue card settings",
+    "管理员未开启龙跃外卡充值！": "The administrator has not enabled Longyue card top-up!",
+    "该套餐未配置龙跃支付": "This plan is not configured for Longyue payment",
+    "Stripe/Creem/龙跃 商品ID（可选）": "Stripe/Creem/Longyue product ID (optional)",
+    "龙跃外卡产品ID": "Longyue card product ID",
+    "龙跃收银台产品标识": "Longyue checkout product identifier"
   }
 }

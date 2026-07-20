@@ -44,7 +44,11 @@ const { Text } = Typography;
 // 过滤易支付方式
 function getEpayMethods(payMethods = []) {
   return (payMethods || []).filter(
-    (m) => m?.type && m.type !== 'stripe' && m.type !== 'creem',
+    (m) =>
+      m?.type &&
+      m.type !== 'stripe' &&
+      m.type !== 'creem' &&
+      m.type !== 'longyue',
   );
 }
 
@@ -77,6 +81,7 @@ const SubscriptionPlansCard = ({
   enableOnlineTopUp = false,
   enableStripeTopUp = false,
   enableCreemTopUp = false,
+  enableLongyueTopUp = false,
   billingPreference,
   onChangeBillingPreference,
   activeSubscriptions = [],
@@ -153,6 +158,34 @@ const SubscriptionPlansCard = ({
       });
       if (res.data?.message === 'success') {
         window.open(res.data.data?.checkout_url, '_blank');
+        showSuccess(t('已打开支付页面'));
+        closeBuy();
+      } else {
+        const errorMsg =
+          typeof res.data?.data === 'string'
+            ? res.data.data
+            : res.data?.message || t('支付失败');
+        showError(errorMsg);
+      }
+    } catch (e) {
+      showError(t('支付请求失败'));
+    } finally {
+      setPaying(false);
+    }
+  };
+
+  const payLongyue = async () => {
+    if (!selectedPlan?.plan?.longyue_product_id) {
+      showError(t('该套餐未配置龙跃支付'));
+      return;
+    }
+    setPaying(true);
+    try {
+      const res = await API.post('/api/subscription/longyue/pay', {
+        plan_id: selectedPlan.plan.id,
+      });
+      if (res.data?.message === 'success' && res.data.data?.pay_link) {
+        window.open(res.data.data.pay_link, '_blank');
         showSuccess(t('已打开支付页面'));
         closeBuy();
       } else {
@@ -673,6 +706,7 @@ const SubscriptionPlansCard = ({
         enableOnlineTopUp={enableOnlineTopUp}
         enableStripeTopUp={enableStripeTopUp}
         enableCreemTopUp={enableCreemTopUp}
+        enableLongyueTopUp={enableLongyueTopUp}
         purchaseLimitInfo={
           selectedPlan?.plan?.id
             ? {
@@ -683,6 +717,7 @@ const SubscriptionPlansCard = ({
         }
         onPayStripe={payStripe}
         onPayCreem={payCreem}
+        onPayLongyue={payLongyue}
         onPayEpay={payEpay}
       />
     </>

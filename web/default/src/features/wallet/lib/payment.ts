@@ -130,7 +130,7 @@ export function getDefaultPaymentType(topupInfo: TopupInfo | null): string {
     return PAYMENT_TYPES.WAFFO_PANCAKE
   }
 
-  if (topupInfo.longyue_enabled) {
+  if (topupInfo.enable_longyue_topup) {
     return PAYMENT_TYPES.LONGYUE
   }
 
@@ -165,7 +165,7 @@ export function getMinTopupAmount(topupInfo: TopupInfo | null): number {
     return topupInfo.waffo_pancake_min_topup || DEFAULT_MIN_TOPUP
   }
 
-  if (topupInfo.longyue_enabled) {
+  if (topupInfo.enable_longyue_topup) {
     return topupInfo.longyue_min_topup || DEFAULT_MIN_TOPUP
   }
 

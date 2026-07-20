@@ -314,7 +314,7 @@ export function Wallet(props: WalletProps) {
                   enableWaffoPancakeTopup={
                     topupInfo?.enable_waffo_pancake_topup
                   }
-                  enableLongyueTopup={topupInfo?.longyue_enabled}
+                  enableLongyueTopup={topupInfo?.enable_longyue_topup}
                   longyueMinTopup={topupInfo?.longyue_min_topup}
                   longyueProcessing={longyueProcessing}
                   onLongyuePay={handleLongyuePay}

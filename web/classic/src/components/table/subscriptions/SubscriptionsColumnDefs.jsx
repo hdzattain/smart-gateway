@@ -205,6 +205,7 @@ const renderResetPeriod = (text, record, t) => {
 const renderPaymentConfig = (text, record, t, enableEpay) => {
   const hasStripe = !!record?.plan?.stripe_price_id;
   const hasCreem = !!record?.plan?.creem_product_id;
+  const hasLongyue = !!record?.plan?.longyue_product_id;
   const hasEpay = !!enableEpay;
 
   return (
@@ -217,6 +218,11 @@ const renderPaymentConfig = (text, record, t, enableEpay) => {
       {hasCreem && (
         <Tag color='cyan' shape='circle'>
           Creem
+        </Tag>
+      )}
+      {hasLongyue && (
+        <Tag color='red' shape='circle'>
+          {t('龙跃外卡')}
         </Tag>
       )}
       {hasEpay && (

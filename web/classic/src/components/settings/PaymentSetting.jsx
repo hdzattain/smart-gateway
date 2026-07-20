@@ -21,6 +21,7 @@ import React, { useEffect, useState } from 'react';
 import { Banner, Button, Card, Spin, Tabs } from '@douyinfe/semi-ui';
 import SettingsGeneralPayment from '../../pages/Setting/Payment/SettingsGeneralPayment';
 import SettingsPaymentGatewayMCTPay from '../../pages/Setting/Payment/SettingsPaymentGatewayMCTPay';
+import SettingsPaymentGatewayLongyue from '../../pages/Setting/Payment/SettingsPaymentGatewayLongyue';
 import SettingsPaymentGateway from '../../pages/Setting/Payment/SettingsPaymentGateway';
 import SettingsPaymentGatewayStripe from '../../pages/Setting/Payment/SettingsPaymentGatewayStripe';
 import SettingsPaymentGatewayCreem from '../../pages/Setting/Payment/SettingsPaymentGatewayCreem';
@@ -53,6 +54,14 @@ const PaymentSetting = () => {
     MCTPayWebhookURL: '',
     MCTPayUnitPrice: 1,
     MCTPayMinTopUp: 1,
+
+    LongyueEnabled: false,
+    LongyueAppId: '',
+    LongyueSecretKey: '',
+    LongyueApiBase: '',
+    LongyueUnitPrice: 1,
+    LongyueMinTopUp: 1,
+    LongyueCurrency: 'USD',
 
     StripeApiSecret: '',
     StripeWebhookSecret: '',
@@ -171,6 +180,8 @@ const PaymentSetting = () => {
           case 'MCTPayMinTopUp':
           case 'StripeUnitPrice':
           case 'StripeMinTopUp':
+          case 'LongyueUnitPrice':
+          case 'LongyueMinTopUp':
             newInputs[item.key] = parseFloat(item.value);
             break;
           default:
@@ -288,6 +299,13 @@ const PaymentSetting = () => {
               </Tabs.TabPane>
               <Tabs.TabPane tab={t('MCTPay 设置')} itemKey='mctpay'>
                 <SettingsPaymentGatewayMCTPay
+                  options={inputs}
+                  refresh={onRefresh}
+                  hideSectionTitle
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab={t('龙跃外卡设置')} itemKey='longyue'>
+                <SettingsPaymentGatewayLongyue
                   options={inputs}
                   refresh={onRefresh}
                   hideSectionTitle

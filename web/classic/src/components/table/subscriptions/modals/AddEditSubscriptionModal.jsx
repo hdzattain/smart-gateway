@@ -97,6 +97,7 @@ const AddEditSubscriptionModal = ({
     upgrade_group: '',
     stripe_price_id: '',
     creem_product_id: '',
+    longyue_product_id: '',
   });
 
   const buildFormValues = () => {
@@ -123,6 +124,7 @@ const AddEditSubscriptionModal = ({
       upgrade_group: p.upgrade_group || '',
       stripe_price_id: p.stripe_price_id || '',
       creem_product_id: p.creem_product_id || '',
+      longyue_product_id: p.longyue_product_id || '',
     };
   };
 
@@ -516,7 +518,7 @@ const AddEditSubscriptionModal = ({
                         {t('第三方支付配置')}
                       </Text>
                       <div className='text-xs text-gray-600'>
-                        {t('Stripe/Creem 商品ID（可选）')}
+                        {t('Stripe/Creem/龙跃 商品ID（可选）')}
                       </div>
                     </div>
                   </div>
@@ -536,6 +538,15 @@ const AddEditSubscriptionModal = ({
                         field='creem_product_id'
                         label='Creem ProductId'
                         placeholder='prod_...'
+                        showClear
+                      />
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Input
+                        field='longyue_product_id'
+                        label={t('龙跃外卡产品ID')}
+                        placeholder={t('龙跃收银台产品标识')}
                         showClear
                       />
                     </Col>

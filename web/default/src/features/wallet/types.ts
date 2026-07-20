@@ -157,7 +157,7 @@ export interface TopupInfo {
   /** Minimum topup amount for Waffo Pancake */
   waffo_pancake_min_topup?: number
   /** Whether Longyue card topup is enabled */
-  longyue_enabled?: boolean
+  enable_longyue_topup?: boolean
   /** Longyue unit price (local currency / USD) */
   longyue_unit_price?: number
   /** Minimum topup amount for Longyue */

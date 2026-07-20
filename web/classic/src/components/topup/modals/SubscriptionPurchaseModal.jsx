@@ -52,9 +52,11 @@ const SubscriptionPurchaseModal = ({
   enableOnlineTopUp = false,
   enableStripeTopUp = false,
   enableCreemTopUp = false,
+  enableLongyueTopUp = false,
   purchaseLimitInfo = null,
   onPayStripe,
   onPayCreem,
+  onPayLongyue,
   onPayEpay,
 }) => {
   const plan = selectedPlan?.plan;
@@ -68,8 +70,9 @@ const SubscriptionPurchaseModal = ({
   // 只有当管理员开启支付网关 AND 套餐配置了对应的支付ID时才显示
   const hasStripe = enableStripeTopUp && !!plan?.stripe_price_id;
   const hasCreem = enableCreemTopUp && !!plan?.creem_product_id;
+  const hasLongyue = enableLongyueTopUp && !!plan?.longyue_product_id;
   const hasEpay = enableOnlineTopUp && epayMethods.length > 0;
-  const hasAnyPayment = hasStripe || hasCreem || hasEpay;
+  const hasAnyPayment = hasStripe || hasCreem || hasLongyue || hasEpay;
   const purchaseLimit = Number(purchaseLimitInfo?.limit || 0);
   const purchaseCount = Number(purchaseLimitInfo?.count || 0);
   const purchaseLimitReached =
@@ -185,8 +188,8 @@ const SubscriptionPurchaseModal = ({
                 {t('选择支付方式')}：
               </Text>
 
-              {/* Stripe / Creem */}
-              {(hasStripe || hasCreem) && (
+              {/* Stripe / Creem / 龙跃外卡 */}
+              {(hasStripe || hasCreem || hasLongyue) && (
                 <div className='flex gap-2'>
                   {hasStripe && (
                     <Button
@@ -210,6 +213,18 @@ const SubscriptionPurchaseModal = ({
                       disabled={purchaseLimitReached}
                     >
                       Creem
+                    </Button>
+                  )}
+                  {hasLongyue && (
+                    <Button
+                      theme='light'
+                      className='flex-1'
+                      icon={<IconCreditCard />}
+                      onClick={onPayLongyue}
+                      loading={paying}
+                      disabled={purchaseLimitReached}
+                    >
+                      {t('龙跃外卡')}
                     </Button>
                   )}
                 </div>
