@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/logger"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/logger"
 
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
@@ -26,6 +26,7 @@ type TopUp struct {
 
 const (
 	PaymentMethodStripe       = "stripe"
+	PaymentMethodMCTPay       = "mct_pay"
 	PaymentMethodCreem        = "creem"
 	PaymentMethodWaffo        = "waffo"
 	PaymentMethodWaffoPancake = "waffo_pancake"
@@ -35,6 +36,7 @@ const (
 const (
 	PaymentProviderEpay         = "epay"
 	PaymentProviderStripe       = "stripe"
+	PaymentProviderMCTPay       = "mct_pay"
 	PaymentProviderCreem        = "creem"
 	PaymentProviderWaffo        = "waffo"
 	PaymentProviderWaffoPancake = "waffo_pancake"
@@ -107,6 +109,10 @@ func UpdatePendingTopUpStatus(tradeNo string, expectedPaymentProvider string, ta
 }
 
 func Recharge(referenceId string, customerId string, callerIp string) (err error) {
+	if customerId == "" {
+		return RechargeGeneric(referenceId, PaymentProviderStripe, callerIp)
+	}
+
 	if referenceId == "" {
 		return errors.New("未提供支付单号")
 	}
@@ -155,6 +161,53 @@ func Recharge(referenceId string, customerId string, callerIp string) (err error
 	}
 
 	RecordTopupLog(topUp.UserId, fmt.Sprintf("使用在线充值成功，充值金额: %v，支付金额：%d", logger.FormatQuota(int(quota)), topUp.Amount), callerIp, topUp.PaymentMethod, PaymentMethodStripe)
+
+	return nil
+}
+
+func RechargeGeneric(referenceId string, expectedPaymentProvider string, callerIp string) (err error) {
+	if referenceId == "" {
+		return errors.New("未提供支付单号")
+	}
+
+	var quota float64
+	topUp := &TopUp{}
+
+	refCol := "`trade_no`"
+	if common.UsingPostgreSQL {
+		refCol = `"trade_no"`
+	}
+
+	err = DB.Transaction(func(tx *gorm.DB) error {
+		err := tx.Set("gorm:query_option", "FOR UPDATE").Where(refCol+" = ?", referenceId).First(topUp).Error
+		if err != nil {
+			return errors.New("充值订单不存在")
+		}
+
+		if expectedPaymentProvider != "" && topUp.PaymentProvider != expectedPaymentProvider {
+			return ErrPaymentMethodMismatch
+		}
+
+		if topUp.Status != common.TopUpStatusPending {
+			return errors.New("充值订单状态错误")
+		}
+
+		topUp.CompleteTime = common.GetTimestamp()
+		topUp.Status = common.TopUpStatusSuccess
+		if err = tx.Save(topUp).Error; err != nil {
+			return err
+		}
+
+		quota = topUp.Money * common.QuotaPerUnit
+		return tx.Model(&User{}).Where("id = ?", topUp.UserId).Update("quota", gorm.Expr("quota + ?", quota)).Error
+	})
+
+	if err != nil {
+		common.SysError("topup failed: " + err.Error())
+		return errors.New("充值失败，请稍后重试")
+	}
+
+	RecordTopupLog(topUp.UserId, fmt.Sprintf("使用在线充值成功，充值金额: %v，支付金额：%d", logger.FormatQuota(int(quota)), topUp.Amount), callerIp, topUp.PaymentMethod, expectedPaymentProvider)
 
 	return nil
 }

@@ -3,8 +3,8 @@ package oauth
 import (
 	"context"
 
-	"github.com/QuantumNous/new-api/model"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/model"
 )
 
 // Provider defines the interface for OAuth providers

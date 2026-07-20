@@ -5,13 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/setting"
-	"github.com/QuantumNous/new-api/setting/config"
-	"github.com/QuantumNous/new-api/setting/operation_setting"
-	"github.com/QuantumNous/new-api/setting/performance_setting"
-	"github.com/QuantumNous/new-api/setting/ratio_setting"
-	"github.com/QuantumNous/new-api/setting/system_setting"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/setting"
+	"github.com/hdzattain/smart-gateway/setting/config"
+	"github.com/hdzattain/smart-gateway/setting/operation_setting"
+	"github.com/hdzattain/smart-gateway/setting/performance_setting"
+	"github.com/hdzattain/smart-gateway/setting/ratio_setting"
+	"github.com/hdzattain/smart-gateway/setting/system_setting"
 	"gorm.io/gorm"
 )
 
@@ -68,9 +68,9 @@ func InitOptionMap() {
 	common.OptionMap["About"] = ""
 	common.OptionMap["HomePageContent"] = ""
 	common.OptionMap["Footer"] = common.Footer
-	common.OptionMap["SystemName"] = common.SystemName
+	common.OptionMap["SystemName"] = "Smart Gateway"
 	common.OptionMap["Logo"] = common.Logo
-	common.OptionMap["ServerAddress"] = ""
+	common.OptionMap["ServerAddress"] = "https://smart-gateway.shop"
 	common.OptionMap["WorkerUrl"] = system_setting.WorkerUrl
 	common.OptionMap["WorkerValidKey"] = system_setting.WorkerValidKey
 	common.OptionMap["WorkerAllowHttpImageRequestEnabled"] = strconv.FormatBool(system_setting.WorkerAllowHttpImageRequestEnabled)
@@ -82,6 +82,13 @@ func InitOptionMap() {
 	common.OptionMap["USDExchangeRate"] = strconv.FormatFloat(operation_setting.USDExchangeRate, 'f', -1, 64)
 	common.OptionMap["MinTopUp"] = strconv.Itoa(operation_setting.MinTopUp)
 	common.OptionMap["StripeMinTopUp"] = strconv.Itoa(setting.StripeMinTopUp)
+	common.OptionMap["MCTPayEnabled"] = strconv.FormatBool(setting.MCTPayEnabled)
+	common.OptionMap["MCTPayMerchantID"] = setting.MCTPayMerchantID
+	common.OptionMap["MCTPaySecretKey"] = setting.MCTPaySecretKey
+	common.OptionMap["MCTPayCheckoutURL"] = setting.MCTPayCheckoutURL
+	common.OptionMap["MCTPayWebhookURL"] = setting.MCTPayWebhookURL
+	common.OptionMap["MCTPayUnitPrice"] = strconv.FormatFloat(setting.MCTPayUnitPrice, 'f', -1, 64)
+	common.OptionMap["MCTPayMinTopUp"] = strconv.Itoa(setting.MCTPayMinTopUp)
 	common.OptionMap["StripeApiSecret"] = setting.StripeApiSecret
 	common.OptionMap["StripeWebhookSecret"] = setting.StripeWebhookSecret
 	common.OptionMap["StripePriceId"] = setting.StripePriceId
@@ -410,6 +417,20 @@ func updateOptionMap(key string, value string) (err error) {
 		setting.StripeMinTopUp, _ = strconv.Atoi(value)
 	case "StripePromotionCodesEnabled":
 		setting.StripePromotionCodesEnabled = value == "true"
+	case "MCTPayEnabled":
+		setting.MCTPayEnabled = value == "true"
+	case "MCTPayMerchantID":
+		setting.MCTPayMerchantID = value
+	case "MCTPaySecretKey":
+		setting.MCTPaySecretKey = value
+	case "MCTPayCheckoutURL":
+		setting.MCTPayCheckoutURL = value
+	case "MCTPayWebhookURL":
+		setting.MCTPayWebhookURL = value
+	case "MCTPayUnitPrice":
+		setting.MCTPayUnitPrice, _ = strconv.ParseFloat(value, 64)
+	case "MCTPayMinTopUp":
+		setting.MCTPayMinTopUp, _ = strconv.Atoi(value)
 	case "CreemApiKey":
 		setting.CreemApiKey = value
 	case "CreemProducts":

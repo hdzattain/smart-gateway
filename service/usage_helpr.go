@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/dto"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/dto"
 )
 
 //func GetPromptTokens(textRequest dto.GeneralOpenAIRequest, relayMode int) (int, error) {

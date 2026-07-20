@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/pkg/ionet"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/pkg/ionet"
 )
 
 func getIoAPIKey(c *gin.Context) (string, bool) {

@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/types"
 )
 
 func GuessRelayFormatFromRequest(req any) (types.RelayFormat, bool) {

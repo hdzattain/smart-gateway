@@ -1,7 +1,7 @@
 package dify
 
 import (
-	"github.com/QuantumNous/new-api/dto"
+	"github.com/hdzattain/smart-gateway/dto"
 )
 
 type DifyChatRequest struct {

@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/logger"
-	relayconstant "github.com/QuantumNous/new-api/relay/constant"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/logger"
+	relayconstant "github.com/hdzattain/smart-gateway/relay/constant"
+	"github.com/hdzattain/smart-gateway/types"
 	"github.com/samber/lo"
 
 	"github.com/gin-gonic/gin"

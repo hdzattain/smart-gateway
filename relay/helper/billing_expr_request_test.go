@@ -7,10 +7,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/dto"
-	relaycommon "github.com/QuantumNous/new-api/relay/common"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/dto"
+	relaycommon "github.com/hdzattain/smart-gateway/relay/common"
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"

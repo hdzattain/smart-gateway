@@ -1,4 +1,4 @@
-module github.com/QuantumNous/new-api
+module github.com/hdzattain/smart-gateway
 
 // +heroku goVersion go1.18
 go 1.25.1
@@ -61,6 +61,23 @@ require (
 )
 
 require github.com/waffo-com/waffo-pancake-sdk-go v0.3.1
+
+require (
+	github.com/cockroachdb/errors v1.9.1 // indirect
+	github.com/cockroachdb/logtags v0.0.0-20211118104740-dabe8e521a4f // indirect
+	github.com/cockroachdb/redact v1.1.3 // indirect
+	github.com/getsentry/sentry-go v0.12.0 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
+	github.com/kr/pretty v0.3.1 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/milvus-io/milvus-proto/go-api/v2 v2.4.10-0.20240819025435-512e3b98866a // indirect
+	github.com/milvus-io/milvus-sdk-go/v2 v2.4.2
+	github.com/rogpeppe/go-internal v1.10.0 // indirect
+	google.golang.org/genproto v0.0.0-20220503193339-ba3ae3f07e29 // indirect
+	google.golang.org/grpc v1.48.0 // indirect
+)
 
 require (
 	github.com/DmitriyVTitov/size v1.5.0 // indirect

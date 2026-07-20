@@ -13,10 +13,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/logger"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/logger"
+	"github.com/hdzattain/smart-gateway/types"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/image/webp"

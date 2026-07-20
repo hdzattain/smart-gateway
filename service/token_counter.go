@@ -8,13 +8,13 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/logger"
-	relaycommon "github.com/QuantumNous/new-api/relay/common"
-	constant2 "github.com/QuantumNous/new-api/relay/constant"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/logger"
+	relaycommon "github.com/hdzattain/smart-gateway/relay/common"
+	constant2 "github.com/hdzattain/smart-gateway/relay/constant"
+	"github.com/hdzattain/smart-gateway/types"
 
 	"github.com/gin-gonic/gin"
 )

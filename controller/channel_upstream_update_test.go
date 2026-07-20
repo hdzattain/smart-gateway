@@ -3,8 +3,8 @@ package controller
 import (
 	"testing"
 
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/model"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/model"
 	"github.com/stretchr/testify/require"
 )
 

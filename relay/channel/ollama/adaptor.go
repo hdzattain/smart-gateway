@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/relay/channel"
-	"github.com/QuantumNous/new-api/relay/channel/openai"
-	relaycommon "github.com/QuantumNous/new-api/relay/common"
-	relayconstant "github.com/QuantumNous/new-api/relay/constant"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/relay/channel"
+	"github.com/hdzattain/smart-gateway/relay/channel/openai"
+	relaycommon "github.com/hdzattain/smart-gateway/relay/common"
+	relayconstant "github.com/hdzattain/smart-gateway/relay/constant"
+	"github.com/hdzattain/smart-gateway/types"
 
 	"github.com/gin-gonic/gin"
 )

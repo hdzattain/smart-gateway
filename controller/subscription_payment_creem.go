@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/logger"
-	"github.com/QuantumNous/new-api/model"
-	"github.com/QuantumNous/new-api/setting"
-	"github.com/QuantumNous/new-api/setting/operation_setting"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/logger"
+	"github.com/hdzattain/smart-gateway/model"
+	"github.com/hdzattain/smart-gateway/setting"
+	"github.com/hdzattain/smart-gateway/setting/operation_setting"
 	"github.com/thanhpk/randstr"
 )
 

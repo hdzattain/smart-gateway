@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/QuantumNous/new-api/model"
+	"github.com/hdzattain/smart-gateway/model"
 )
 
 const (

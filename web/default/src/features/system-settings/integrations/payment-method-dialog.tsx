@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { useEffect, useMemo } from 'react'
 import * as z from 'zod'
@@ -64,6 +64,7 @@ type PaymentMethodDialogProps = {
 }
 
 const PAYMENT_TYPES = [
+  { value: 'mct_pay', label: 'MCT Pay' },
   { value: 'alipay', label: 'Alipay' },
   { value: 'wxpay', label: 'WeChat Pay' },
   { value: 'stripe', label: 'Stripe' },
@@ -77,6 +78,7 @@ const getColorPreview = (color: string) => {
 }
 
 const COLOR_PRESETS = [
+  { value: '#0F766E', label: 'Teal (MCT Pay)' },
   { value: '#1677FF', label: 'Blue (Alipay)' },
   { value: '#07C160', label: 'Green (WeChat)' },
   { value: '#635BFF', label: 'Purple (Stripe)' },

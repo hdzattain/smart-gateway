@@ -8,11 +8,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/setting/billing_setting"
-	"github.com/QuantumNous/new-api/setting/ratio_setting"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/setting/billing_setting"
+	"github.com/hdzattain/smart-gateway/setting/ratio_setting"
+	"github.com/hdzattain/smart-gateway/types"
 )
 
 type Pricing struct {

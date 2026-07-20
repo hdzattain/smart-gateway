@@ -14,8 +14,8 @@ apt-get install -y git curl ca-certificates nginx
 ## 2. Clone the repository
 
 ```bash
-git clone https://github.com/hdzattain/smart-gateway.git /root/new-api
-cd /root/new-api
+git clone https://github.com/hdzattain/smart-gateway.git /root/smart-gateway
+cd /root/smart-gateway
 ```
 
 ## 3. Install runtimes
@@ -47,20 +47,20 @@ swapon /swapfile2
 Build:
 
 ```bash
-cd /root/new-api/web
+cd /root/smart-gateway/web
 bun install
 
-cd /root/new-api/web/default
+cd /root/smart-gateway/web/default
 export NODE_OPTIONS="--max-old-space-size=3072"
 DISABLE_ESLINT_PLUGIN=true VITE_REACT_APP_VERSION=dev bun run build
 
-cd /root/new-api/web/classic
+cd /root/smart-gateway/web/classic
 export NODE_OPTIONS="--max-old-space-size=3072"
 VITE_REACT_APP_VERSION=dev bun run build
 
-cd /root/new-api
+cd /root/smart-gateway
 go mod download
-go build -ldflags "-s -w" -o /root/new-api/new-api-server main.go
+go build -ldflags "-s -w" -o /root/smart-gateway/smart-gateway-server main.go
 ```
 
 ## 5. Restore runtime data
@@ -68,9 +68,9 @@ go build -ldflags "-s -w" -o /root/new-api/new-api-server main.go
 From the old VPS:
 
 ```bash
-scp root@OLD_VPS_IP:/root/new-api/one-api.db /root/new-api/one-api.db
-scp root@OLD_VPS_IP:/root/new-api/.admin_password /root/new-api/.admin_password
-chmod 600 /root/new-api/.admin_password
+scp root@OLD_VPS_IP:/root/smart-gateway/smart-gateway.db /root/smart-gateway/smart-gateway.db
+scp root@OLD_VPS_IP:/root/smart-gateway/.admin_password /root/smart-gateway/.admin_password
+chmod 600 /root/smart-gateway/.admin_password
 ```
 
 If starting fresh, run the setup wizard from the web UI and create a new admin.
@@ -80,26 +80,26 @@ If starting fresh, run the setup wizard from the web UI and create a new admin.
 ```bash
 cat >/etc/systemd/system/smart-gateway.service <<'EOF'
 [Unit]
-Description=Smart Gateway (New API)
+Description=Smart Gateway (Smart Gateway)
 After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/root/new-api
+WorkingDirectory=/root/smart-gateway
 Environment=PORT=3000
-Environment=SQLITE_PATH=/root/new-api/one-api.db
-ExecStart=/root/new-api/new-api-server
+Environment=SQLITE_PATH=/root/smart-gateway/smart-gateway.db
+ExecStart=/root/smart-gateway/smart-gateway-server
 Restart=always
 RestartSec=5
 LimitNOFILE=65535
-StandardOutput=append:/root/new-api/logs/smart-gateway.log
-StandardError=append:/root/new-api/logs/smart-gateway.err.log
+StandardOutput=append:/root/smart-gateway/logs/smart-gateway.log
+StandardError=append:/root/smart-gateway/logs/smart-gateway.err.log
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-mkdir -p /root/new-api/logs
+mkdir -p /root/smart-gateway/logs
 systemctl daemon-reload
 systemctl enable smart-gateway
 systemctl restart smart-gateway
@@ -108,7 +108,7 @@ systemctl restart smart-gateway
 ## 7. Configure Nginx
 
 ```bash
-cp /root/new-api/deploy/nginx/smart-gateway.shop.conf /etc/nginx/sites-available/smart-gateway.shop
+cp /root/smart-gateway/deploy/nginx/smart-gateway.shop.conf /etc/nginx/sites-available/smart-gateway.shop
 ln -sf /etc/nginx/sites-available/smart-gateway.shop /etc/nginx/sites-enabled/smart-gateway.shop
 rm -f /etc/nginx/sites-enabled/default
 nginx -t

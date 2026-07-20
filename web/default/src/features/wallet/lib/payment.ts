@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import {
   PAYMENT_TYPES,
@@ -75,6 +75,10 @@ export function isStripePayment(paymentType: string): boolean {
   return paymentType === PAYMENT_TYPES.STRIPE
 }
 
+export function isMCTPayPayment(paymentType: string): boolean {
+  return paymentType === PAYMENT_TYPES.MCT_PAY
+}
+
 /**
  * Check if payment method is Waffo Pancake
  *
@@ -97,6 +101,10 @@ export function getDefaultPaymentType(topupInfo: TopupInfo | null): string {
   // Return first available payment method or default
   if (topupInfo.pay_methods?.length > 0) {
     return topupInfo.pay_methods[0].type
+  }
+
+  if (topupInfo.enable_mct_pay_topup) {
+    return PAYMENT_TYPES.MCT_PAY
   }
 
   if (topupInfo.enable_stripe_topup) {
@@ -124,6 +132,10 @@ export function getMinTopupAmount(topupInfo: TopupInfo | null): number {
 
   if (topupInfo.enable_online_topup) {
     return topupInfo.min_topup
+  }
+
+  if (topupInfo.enable_mct_pay_topup) {
+    return topupInfo.mct_pay_min_topup || DEFAULT_MIN_TOPUP
   }
 
   if (topupInfo.enable_stripe_topup) {

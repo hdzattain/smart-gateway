@@ -8,14 +8,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/i18n"
-	"github.com/QuantumNous/new-api/logger"
-	"github.com/QuantumNous/new-api/model"
-	"github.com/QuantumNous/new-api/service"
-	"github.com/QuantumNous/new-api/setting/ratio_setting"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/i18n"
+	"github.com/hdzattain/smart-gateway/logger"
+	"github.com/hdzattain/smart-gateway/model"
+	"github.com/hdzattain/smart-gateway/service"
+	"github.com/hdzattain/smart-gateway/setting/ratio_setting"
+	"github.com/hdzattain/smart-gateway/types"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -92,8 +92,8 @@ func authHelper(c *gin.Context, minRole int) {
 			return
 		}
 	}
-	// get header New-Api-User
-	apiUserIdStr := c.Request.Header.Get("New-Api-User")
+	// get header Smart-Gateway-User
+	apiUserIdStr := c.Request.Header.Get("Smart-Gateway-User")
 	if apiUserIdStr == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,

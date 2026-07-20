@@ -9,19 +9,19 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/model"
-	"github.com/QuantumNous/new-api/service"
-	"github.com/QuantumNous/new-api/setting/operation_setting"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/model"
+	"github.com/hdzattain/smart-gateway/service"
+	"github.com/hdzattain/smart-gateway/setting/operation_setting"
+	"github.com/hdzattain/smart-gateway/types"
 
 	"github.com/shopspring/decimal"
 
 	"github.com/gin-gonic/gin"
 )
 
-// https://github.com/songquanpeng/one-api/issues/79
+// https://smart-gateway.shop/issues/79
 
 type OpenAISubscriptionResponse struct {
 	Object             string  `json:"object"`

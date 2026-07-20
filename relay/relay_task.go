@@ -9,17 +9,17 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/model"
-	"github.com/QuantumNous/new-api/relay/channel"
-	"github.com/QuantumNous/new-api/relay/channel/task/taskcommon"
-	relaycommon "github.com/QuantumNous/new-api/relay/common"
-	relayconstant "github.com/QuantumNous/new-api/relay/constant"
-	"github.com/QuantumNous/new-api/relay/helper"
-	"github.com/QuantumNous/new-api/service"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/model"
+	"github.com/hdzattain/smart-gateway/relay/channel"
+	"github.com/hdzattain/smart-gateway/relay/channel/task/taskcommon"
+	relaycommon "github.com/hdzattain/smart-gateway/relay/common"
+	relayconstant "github.com/hdzattain/smart-gateway/relay/constant"
+	"github.com/hdzattain/smart-gateway/relay/helper"
+	"github.com/hdzattain/smart-gateway/service"
 )
 
 type TaskSubmitResult struct {
@@ -232,7 +232,7 @@ func RelayTaskSubmit(c *gin.Context, info *relaycommon.RelayInfo) (*TaskSubmitRe
 		otherRatios = map[string]float64{}
 	}
 	ratiosJSON, _ := common.Marshal(otherRatios)
-	c.Header("X-New-Api-Other-Ratios", string(ratiosJSON))
+	c.Header("X-Smart-Gateway-Other-Ratios", string(ratiosJSON))
 
 	// 11. 解析响应
 	upstreamTaskID, taskData, taskErr := adaptor.DoResponse(c, resp, info)

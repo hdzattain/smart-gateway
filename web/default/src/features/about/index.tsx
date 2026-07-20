@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { useQuery } from '@tanstack/react-query'
 import { Construction } from 'lucide-react'
@@ -57,46 +57,46 @@ function EmptyAboutState() {
         </div>
         <div className='space-y-4 text-sm'>
           <p>
-            {t('New API Project Repository:')}{' '}
+            {t('Smart Gateway Project Repository:')}{' '}
             <a
-              href='https://github.com/QuantumNous/new-api'
+              href='https://github.com/hdzattain/smart-gateway'
               target='_blank'
               rel='noopener noreferrer'
               className='text-primary hover:underline'
             >
-              {t('https://github.com/QuantumNous/new-api')}
+              {t('https://github.com/hdzattain/smart-gateway')}
             </a>
           </p>
           <p className='text-muted-foreground'>
             <a
-              href='https://github.com/QuantumNous/new-api'
+              href='https://github.com/hdzattain/smart-gateway'
               target='_blank'
               rel='noopener noreferrer'
               className='text-primary hover:underline'
             >
-              {t('NewAPI')}
+              {t('Smart Gateway')}
             </a>{' '}
             © {currentYear}{' '}
             <a
-              href='https://github.com/QuantumNous'
+              href='https://github.com/Smart Gateway'
               target='_blank'
               rel='noopener noreferrer'
               className='text-primary hover:underline'
             >
-              {t('QuantumNous')}
+              {t('Smart Gateway')}
             </a>{' '}
             {t('| Based on')}{' '}
             <a
-              href='https://github.com/songquanpeng/one-api'
+              href='https://smart-gateway.shop'
               target='_blank'
               rel='noopener noreferrer'
               className='text-primary hover:underline'
             >
-              {t('One API')}
+              {t('Smart Gateway')}
             </a>{' '}
             © 2023{' '}
             <a
-              href='https://github.com/songquanpeng'
+              href='https://smart-gateway.shop'
               target='_blank'
               rel='noopener noreferrer'
               className='text-primary hover:underline'
@@ -107,7 +107,7 @@ function EmptyAboutState() {
           <p className='text-muted-foreground'>
             {t('This project must be used in compliance with the')}{' '}
             <a
-              href='https://github.com/QuantumNous/new-api/blob/main/LICENSE'
+              href='https://github.com/hdzattain/smart-gateway/blob/main/LICENSE'
               target='_blank'
               rel='noopener noreferrer'
               className='text-primary hover:underline'

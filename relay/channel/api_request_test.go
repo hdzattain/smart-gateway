@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	relaycommon "github.com/QuantumNous/new-api/relay/common"
 	"github.com/gin-gonic/gin"
+	relaycommon "github.com/hdzattain/smart-gateway/relay/common"
 	"github.com/stretchr/testify/require"
 )
 

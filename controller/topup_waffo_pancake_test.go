@@ -3,9 +3,9 @@ package controller
 import (
 	"testing"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/setting"
-	"github.com/QuantumNous/new-api/setting/operation_setting"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/setting"
+	"github.com/hdzattain/smart-gateway/setting/operation_setting"
 	"github.com/stretchr/testify/require"
 )
 

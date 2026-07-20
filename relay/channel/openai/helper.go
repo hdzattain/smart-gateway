@@ -3,14 +3,14 @@ package openai
 import (
 	"strings"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/logger"
-	relaycommon "github.com/QuantumNous/new-api/relay/common"
-	relayconstant "github.com/QuantumNous/new-api/relay/constant"
-	"github.com/QuantumNous/new-api/relay/helper"
-	"github.com/QuantumNous/new-api/service"
-	"github.com/QuantumNous/new-api/types"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/logger"
+	relaycommon "github.com/hdzattain/smart-gateway/relay/common"
+	relayconstant "github.com/hdzattain/smart-gateway/relay/constant"
+	"github.com/hdzattain/smart-gateway/relay/helper"
+	"github.com/hdzattain/smart-gateway/service"
+	"github.com/hdzattain/smart-gateway/types"
 
 	"github.com/samber/lo"
 

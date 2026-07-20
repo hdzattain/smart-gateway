@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 // ============================================================================
 // Wallet Type Definitions
@@ -39,6 +39,7 @@ export type PaymentResponse = ApiResponse<Record<string, unknown>> & {
   url?: string
 }
 export type StripePaymentResponse = ApiResponse<{ pay_link: string }>
+export type MCTPayPaymentResponse = ApiResponse<{ pay_link: string }>
 export type AffiliateCodeResponse = ApiResponse<string>
 export type AffiliateTransferResponse = ApiResponse
 export type CreemPaymentResponse = ApiResponse<{ checkout_url: string }>
@@ -52,7 +53,7 @@ export type WaffoPancakePaymentResponse = ApiResponse<
       expires_at?: number | string
       order_id?: string
       // Self-service session token + expiry — surfaced by the backend so
-      // future flows (refund / cancel from new-api's own UI) can use them
+      // future flows (refund / cancel from smart-gateway's own UI) can use them
       // without re-issuing checkout. Not consumed by the current handler.
       token?: string
       token_expires_at?: number | string
@@ -124,12 +125,16 @@ export interface TopupInfo {
   enable_online_topup: boolean
   /** Whether Stripe topup is enabled */
   enable_stripe_topup: boolean
+  /** Whether MCT Pay topup is enabled */
+  enable_mct_pay_topup?: boolean
   /** Available payment methods */
   pay_methods: PaymentMethod[]
   /** Minimum topup amount for online topup */
   min_topup: number
   /** Minimum topup amount for Stripe */
   stripe_min_topup: number
+  /** Minimum topup amount for MCT Pay */
+  mct_pay_min_topup?: number
   /** Preset amount options */
   amount_options: number[]
   /** Discount rates by amount */

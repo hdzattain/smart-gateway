@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"runtime/debug"
 
-	"github.com/QuantumNous/new-api/common"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/common"
 )
 
 var _bp = func() string {

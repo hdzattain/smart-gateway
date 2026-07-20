@@ -19,9 +19,9 @@ web/dist
 *.pem
 *.key
 *.crt
-one-api
-new-api
-new-api-server
+smart-gateway
+smart-gateway
+smart-gateway-server
 delivery_manifest.json
 state.json
 /__debug_bin*

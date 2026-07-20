@@ -20,6 +20,7 @@ For commercial licensing, please contact support@quantumnous.com
 import React, { useEffect, useState } from 'react';
 import { Banner, Button, Card, Spin, Tabs } from '@douyinfe/semi-ui';
 import SettingsGeneralPayment from '../../pages/Setting/Payment/SettingsGeneralPayment';
+import SettingsPaymentGatewayMCTPay from '../../pages/Setting/Payment/SettingsPaymentGatewayMCTPay';
 import SettingsPaymentGateway from '../../pages/Setting/Payment/SettingsPaymentGateway';
 import SettingsPaymentGatewayStripe from '../../pages/Setting/Payment/SettingsPaymentGatewayStripe';
 import SettingsPaymentGatewayCreem from '../../pages/Setting/Payment/SettingsPaymentGatewayCreem';
@@ -44,6 +45,14 @@ const PaymentSetting = () => {
     PayMethods: '',
     AmountOptions: '',
     AmountDiscount: '',
+
+    MCTPayEnabled: false,
+    MCTPayMerchantID: '',
+    MCTPaySecretKey: '',
+    MCTPayCheckoutURL: 'https://mct.com.sg/chn/mctpay/',
+    MCTPayWebhookURL: '',
+    MCTPayUnitPrice: 1,
+    MCTPayMinTopUp: 1,
 
     StripeApiSecret: '',
     StripeWebhookSecret: '',
@@ -158,6 +167,8 @@ const PaymentSetting = () => {
             break;
           case 'Price':
           case 'MinTopUp':
+          case 'MCTPayUnitPrice':
+          case 'MCTPayMinTopUp':
           case 'StripeUnitPrice':
           case 'StripeMinTopUp':
             newInputs[item.key] = parseFloat(item.value);
@@ -270,6 +281,13 @@ const PaymentSetting = () => {
             >
               <Tabs.TabPane tab={t('通用设置')} itemKey='general'>
                 <SettingsGeneralPayment
+                  options={inputs}
+                  refresh={onRefresh}
+                  hideSectionTitle
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab={t('MCTPay 设置')} itemKey='mctpay'>
+                <SettingsPaymentGatewayMCTPay
                   options={inputs}
                   refresh={onRefresh}
                   hideSectionTitle

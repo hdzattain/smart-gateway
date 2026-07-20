@@ -13,24 +13,24 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/logger"
-	"github.com/QuantumNous/new-api/relay/channel"
-	"github.com/QuantumNous/new-api/relay/channel/ai360"
-	"github.com/QuantumNous/new-api/relay/channel/lingyiwanwu"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/logger"
+	"github.com/hdzattain/smart-gateway/relay/channel"
+	"github.com/hdzattain/smart-gateway/relay/channel/ai360"
+	"github.com/hdzattain/smart-gateway/relay/channel/lingyiwanwu"
 
-	//"github.com/QuantumNous/new-api/relay/channel/minimax"
-	"github.com/QuantumNous/new-api/relay/channel/openrouter"
-	"github.com/QuantumNous/new-api/relay/channel/xinference"
-	relaycommon "github.com/QuantumNous/new-api/relay/common"
-	"github.com/QuantumNous/new-api/relay/common_handler"
-	relayconstant "github.com/QuantumNous/new-api/relay/constant"
-	"github.com/QuantumNous/new-api/service"
-	"github.com/QuantumNous/new-api/setting/model_setting"
-	"github.com/QuantumNous/new-api/setting/reasoning"
-	"github.com/QuantumNous/new-api/types"
+	//"github.com/hdzattain/smart-gateway/relay/channel/minimax"
+	"github.com/hdzattain/smart-gateway/relay/channel/openrouter"
+	"github.com/hdzattain/smart-gateway/relay/channel/xinference"
+	relaycommon "github.com/hdzattain/smart-gateway/relay/common"
+	"github.com/hdzattain/smart-gateway/relay/common_handler"
+	relayconstant "github.com/hdzattain/smart-gateway/relay/constant"
+	"github.com/hdzattain/smart-gateway/service"
+	"github.com/hdzattain/smart-gateway/setting/model_setting"
+	"github.com/hdzattain/smart-gateway/setting/reasoning"
+	"github.com/hdzattain/smart-gateway/types"
 	"github.com/samber/lo"
 
 	"github.com/gin-gonic/gin"
@@ -151,7 +151,7 @@ func (a *Adaptor) GetRequestURL(info *relaycommon.RelayInfo) (string, error) {
 		if info.ChannelCreateTime < constant.AzureNoRemoveDotTime {
 			model_ = strings.Replace(model_, ".", "", -1)
 		}
-		// https://github.com/songquanpeng/one-api/issues/67
+		// https://smart-gateway.shop/issues/67
 		requestURL = fmt.Sprintf("/openai/deployments/%s/%s", model_, task)
 		if info.RelayMode == relayconstant.RelayModeRealtime {
 			requestURL = fmt.Sprintf("/openai/realtime?deployment=%s&api-version=%s", model_, apiVersion)
@@ -221,7 +221,7 @@ func (a *Adaptor) SetupRequestHeader(c *gin.Context, header *http.Header, info *
 			header.Set("HTTP-Referer", "https://www.newapi.ai")
 		}
 		if header.Get("X-OpenRouter-Title") == "" {
-			header.Set("X-OpenRouter-Title", "New API")
+			header.Set("X-OpenRouter-Title", "Smart Gateway")
 		}
 	}
 	return nil

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"embed"
 	"fmt"
 	"log"
@@ -11,20 +12,21 @@ import (
 	"strings"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/constant"
-	"github.com/QuantumNous/new-api/controller"
-	"github.com/QuantumNous/new-api/i18n"
-	"github.com/QuantumNous/new-api/logger"
-	"github.com/QuantumNous/new-api/middleware"
-	"github.com/QuantumNous/new-api/model"
-	"github.com/QuantumNous/new-api/oauth"
-	perfmetrics "github.com/QuantumNous/new-api/pkg/perf_metrics"
-	"github.com/QuantumNous/new-api/relay"
-	"github.com/QuantumNous/new-api/router"
-	"github.com/QuantumNous/new-api/service"
-	_ "github.com/QuantumNous/new-api/setting/performance_setting"
-	"github.com/QuantumNous/new-api/setting/ratio_setting"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/constant"
+	"github.com/hdzattain/smart-gateway/controller"
+	"github.com/hdzattain/smart-gateway/i18n"
+	"github.com/hdzattain/smart-gateway/logger"
+	"github.com/hdzattain/smart-gateway/middleware"
+	"github.com/hdzattain/smart-gateway/model"
+	"github.com/hdzattain/smart-gateway/oauth"
+	milvusmemory "github.com/hdzattain/smart-gateway/pkg/milvus"
+	perfmetrics "github.com/hdzattain/smart-gateway/pkg/perf_metrics"
+	"github.com/hdzattain/smart-gateway/relay"
+	"github.com/hdzattain/smart-gateway/router"
+	"github.com/hdzattain/smart-gateway/service"
+	_ "github.com/hdzattain/smart-gateway/setting/performance_setting"
+	"github.com/hdzattain/smart-gateway/setting/ratio_setting"
 
 	"github.com/bytedance/gopkg/util/gopool"
 	"github.com/gin-contrib/sessions"
@@ -56,7 +58,7 @@ func main() {
 		return
 	}
 
-	common.SysLog("New API " + common.Version + " started")
+	common.SysLog("Smart Gateway " + common.Version + " started")
 	if os.Getenv("GIN_MODE") != "debug" {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -65,6 +67,9 @@ func main() {
 	}
 
 	defer func() {
+		if err := milvusmemory.Close(); err != nil {
+			common.SysLog("failed to close Milvus client: " + err.Error())
+		}
 		err := model.CloseDB()
 		if err != nil {
 			common.FatalLog("failed to close database: " + err.Error())
@@ -112,6 +117,12 @@ func main() {
 	}
 
 	go controller.AutomaticallyTestChannels()
+
+	if err := milvusmemory.Init(context.Background()); err != nil {
+		common.SysLog("Milvus sleep memory initialization skipped: " + err.Error())
+	} else {
+		common.SysLog("Milvus sleep memory initialized")
+	}
 
 	// Codex credential auto-refresh check every 10 minutes, refresh when expires within 1 day
 	service.StartCodexCredentialAutoRefreshTask()
@@ -164,7 +175,7 @@ func main() {
 		common.SysLog(fmt.Sprintf("panic detected: %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": gin.H{
-				"message": fmt.Sprintf("Panic detected, error: %v. Please submit a issue here: https://github.com/Calcium-Ion/new-api", err),
+				"message": fmt.Sprintf("Panic detected, error: %v. Please submit a issue here: https://github.com/hdzattain/smart-gateway", err),
 				"type":    "new_api_panic",
 			},
 		})
@@ -224,7 +235,7 @@ func InjectUmamiAnalytics() {
 		analyticsInjectBuilder.WriteString(umamiSiteID)
 		analyticsInjectBuilder.WriteString("\"></script>")
 	}
-	analyticsInjectBuilder.WriteString("<!--Umami QuantumNous-->\n")
+	analyticsInjectBuilder.WriteString("<!--Umami Smart Gateway-->\n")
 	analyticsInject := []byte(analyticsInjectBuilder.String())
 	placeholder := []byte("<!--umami-->\n")
 	indexPage = bytes.ReplaceAll(indexPage, placeholder, analyticsInject)
@@ -248,7 +259,7 @@ func InjectGoogleAnalytics() {
 		analyticsInjectBuilder.WriteString("');")
 		analyticsInjectBuilder.WriteString("</script>")
 	}
-	analyticsInjectBuilder.WriteString("<!--Google Analytics QuantumNous-->\n")
+	analyticsInjectBuilder.WriteString("<!--Google Analytics Smart Gateway-->\n")
 	analyticsInject := []byte(analyticsInjectBuilder.String())
 	placeholder := []byte("<!--Google Analytics-->\n")
 	indexPage = bytes.ReplaceAll(indexPage, placeholder, analyticsInject)

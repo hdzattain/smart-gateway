@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 QuantumNous
+Copyright (C) 2025 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 
 import React, { useEffect, useState, useMemo, useContext } from 'react';
@@ -63,7 +63,7 @@ const FooterBar = () => {
                 </p>
                 <div className='flex flex-col gap-4'>
                   <a
-                    href='https://docs.newapi.pro/wiki/project-introduction/'
+                    href='https://smart-gateway.shop/docs/wiki/project-introduction/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -71,7 +71,7 @@ const FooterBar = () => {
                     {t('关于项目')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/support/community-interaction/'
+                    href='https://smart-gateway.shop/docs/support/community-interaction/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -79,7 +79,7 @@ const FooterBar = () => {
                     {t('联系我们')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/wiki/features-introduction/'
+                    href='https://smart-gateway.shop/docs/wiki/features-introduction/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -95,7 +95,7 @@ const FooterBar = () => {
                 </p>
                 <div className='flex flex-col gap-4'>
                   <a
-                    href='https://docs.newapi.pro/getting-started/'
+                    href='https://smart-gateway.shop/docs/getting-started/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -103,7 +103,7 @@ const FooterBar = () => {
                     {t('快速开始')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/installation/'
+                    href='https://smart-gateway.shop/docs/installation/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -111,7 +111,7 @@ const FooterBar = () => {
                     {t('安装指南')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/api/'
+                    href='https://smart-gateway.shop/docs/api/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -127,12 +127,12 @@ const FooterBar = () => {
                 </p>
                 <div className='flex flex-col gap-4'>
                   <a
-                    href='https://github.com/songquanpeng/one-api'
+                    href='https://smart-gateway.shop'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
                   >
-                    One API
+                    Smart Gateway
                   </a>
                   <a
                     href='https://github.com/novicezk/midjourney-proxy'
@@ -143,12 +143,12 @@ const FooterBar = () => {
                     Midjourney-Proxy
                   </a>
                   <a
-                    href='https://github.com/Calcium-Ion/new-api-key-tool'
+                    href='https://https://smart-gateway.shop'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
                   >
-                    new-api-key-tool
+                    Smart Gateway key tool
                   </a>
                 </div>
               </div>
@@ -159,12 +159,12 @@ const FooterBar = () => {
                 </p>
                 <div className='flex flex-col gap-4'>
                   <a
-                    href='https://github.com/Calcium-Ion/new-api-horizon'
+                    href='https://https://smart-gateway.shop'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
                   >
-                    new-api-horizon
+                    Smart Gateway Horizon
                   </a>
                   <a
                     href='https://github.com/coaidev/coai'
@@ -195,19 +195,6 @@ const FooterBar = () => {
             </Typography.Text>
           </div>
 
-          <div className='text-sm'>
-            <span className='!text-semi-color-text-1'>
-              {t('设计与开发由')}{' '}
-            </span>
-            <a
-              href='https://github.com/QuantumNous/new-api'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='!text-semi-color-primary font-medium'
-            >
-              New API
-            </a>
-          </div>
         </div>
       </footer>
     ),
@@ -227,19 +214,6 @@ const FooterBar = () => {
               className='custom-footer na-cb6feafeb3990c78 text-sm !text-semi-color-text-1'
               dangerouslySetInnerHTML={{ __html: footer }}
             ></div>
-            <div className='text-sm flex-shrink-0'>
-              <span className='!text-semi-color-text-1'>
-                {t('设计与开发由')}{' '}
-              </span>
-              <a
-                href='https://github.com/QuantumNous/new-api'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='!text-semi-color-primary font-medium'
-              >
-                New API
-              </a>
-            </div>
           </div>
         </footer>
       ) : (

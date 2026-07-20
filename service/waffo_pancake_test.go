@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/model"
 	"github.com/glebarez/sqlite"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/model"
 	"github.com/stretchr/testify/require"
 	"gorm.io/gorm"
 )

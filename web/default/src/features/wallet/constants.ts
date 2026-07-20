@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 // ============================================================================
 // Wallet Constants
@@ -33,6 +33,7 @@ export const PAYMENT_TYPES = {
   ALIPAY: 'alipay',
   WECHAT: 'wxpay',
   STRIPE: 'stripe',
+  MCT_PAY: 'mct_pay',
   CREEM: 'creem',
   WAFFO: 'waffo',
   WAFFO_PANCAKE: 'waffo_pancake',
@@ -50,6 +51,7 @@ export const PAYMENT_ICON_COLORS = {
   [PAYMENT_TYPES.ALIPAY]: '#1677FF',
   [PAYMENT_TYPES.WECHAT]: '#07C160',
   [PAYMENT_TYPES.STRIPE]: '#635BFF',
+  [PAYMENT_TYPES.MCT_PAY]: '#0F766E',
   [PAYMENT_TYPES.CREEM]: '#6366F1',
   [PAYMENT_TYPES.WAFFO]: '#2563EB',
   [PAYMENT_TYPES.WAFFO_PANCAKE]: '#F97316',

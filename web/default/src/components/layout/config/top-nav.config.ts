@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { type TopNavLink } from '../types'
 
@@ -23,8 +23,11 @@ import { type TopNavLink } from '../types'
  *
  * In practice, navigation links are dynamically fetched from backend.
  * Priority: Backend dynamic links > Provided navLinks > defaultTopNavLinks
- *
- * This is intentionally empty to encourage backend configuration.
- * If you need fallback links, add them here.
  */
-export const defaultTopNavLinks: TopNavLink[] = []
+export const defaultTopNavLinks: TopNavLink[] = [
+  { title: 'Home', href: '/' },
+  { title: 'Model Square', href: '/pricing' },
+  { title: 'AI Deals', href: '/ai-deals' },
+  { title: 'Rankings', href: '/rankings' },
+  { title: 'About', href: '/about' },
+]

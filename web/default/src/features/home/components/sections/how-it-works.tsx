@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { Settings, Zap, BarChart3 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -49,9 +49,9 @@ export function HowItWorks() {
   ]
 
   return (
-    <section className='border-border/40 relative z-10 border-t px-6 py-24 md:py-32'>
+    <section className='border-border/40 relative z-10 border-t px-6 py-20 md:py-28'>
       <div className='mx-auto max-w-6xl'>
-        <AnimateInView className='mb-16 text-center md:mb-20'>
+        <AnimateInView className='mb-14 text-center md:mb-16'>
           <p className='text-muted-foreground mb-3 text-xs font-medium tracking-widest uppercase'>
             {t('How It Works')}
           </p>
@@ -60,15 +60,15 @@ export function HowItWorks() {
           </h2>
         </AnimateInView>
 
-        <div className='grid gap-8 md:grid-cols-3 md:gap-12'>
+        <div className='grid gap-4 md:grid-cols-3'>
           {steps.map((step, i) => (
             <AnimateInView
               key={step.num}
               delay={i * 150}
               animation='fade-up'
-              className='relative flex flex-col items-center text-center'
+              className='relative rounded-2xl border border-border/60 bg-background/75 p-6 text-center shadow-xs backdrop-blur-sm'
             >
-              <div className='relative mb-6'>
+              <div className='relative mb-5 flex justify-center'>
                 <div className='text-muted-foreground border-border/50 bg-muted/30 flex size-16 items-center justify-center rounded-2xl border transition-colors'>
                   {step.icon}
                 </div>

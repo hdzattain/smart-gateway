@@ -1,6 +1,6 @@
 package cloudflare
 
-import "github.com/QuantumNous/new-api/dto"
+import "github.com/hdzattain/smart-gateway/dto"
 
 type CfRequest struct {
 	Messages    []dto.Message `json:"messages,omitempty"`

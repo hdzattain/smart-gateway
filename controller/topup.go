@@ -8,12 +8,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/logger"
-	"github.com/QuantumNous/new-api/model"
-	"github.com/QuantumNous/new-api/service"
-	"github.com/QuantumNous/new-api/setting"
-	"github.com/QuantumNous/new-api/setting/operation_setting"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/logger"
+	"github.com/hdzattain/smart-gateway/model"
+	"github.com/hdzattain/smart-gateway/service"
+	"github.com/hdzattain/smart-gateway/setting"
+	"github.com/hdzattain/smart-gateway/setting/operation_setting"
 
 	"github.com/Calcium-Ion/go-epay/epay"
 	"github.com/gin-gonic/gin"
@@ -28,6 +28,26 @@ func GetTopUpInfo(c *gin.Context) {
 	payMethods := operation_setting.PayMethods
 	if !complianceConfirmed {
 		payMethods = []map[string]string{}
+	}
+
+	if isMCTPayTopUpEnabled() {
+		hasMCTPay := false
+		for _, method := range payMethods {
+			if method["type"] == model.PaymentMethodMCTPay {
+				hasMCTPay = true
+				break
+			}
+		}
+
+		if !hasMCTPay {
+			mctPayMethod := map[string]string{
+				"name":      "MCT Pay",
+				"type":      model.PaymentMethodMCTPay,
+				"color":     "#0F766E",
+				"min_topup": strconv.Itoa(setting.MCTPayMinTopUp),
+			}
+			payMethods = append([]map[string]string{mctPayMethod}, payMethods...)
+		}
 	}
 
 	// 如果启用了 Stripe 支付，添加到支付方法列表
@@ -98,6 +118,7 @@ func GetTopUpInfo(c *gin.Context) {
 	data := gin.H{
 		"enable_online_topup":              isEpayTopUpEnabled(),
 		"enable_stripe_topup":              isStripeTopUpEnabled(),
+		"enable_mct_pay_topup":             isMCTPayTopUpEnabled(),
 		"enable_creem_topup":               isCreemTopUpEnabled(),
 		"enable_waffo_topup":               enableWaffo,
 		"enable_waffo_pancake_topup":       enableWaffoPancake,
@@ -114,6 +135,7 @@ func GetTopUpInfo(c *gin.Context) {
 		"pay_methods":             payMethods,
 		"min_topup":               operation_setting.MinTopUp,
 		"stripe_min_topup":        setting.StripeMinTopUp,
+		"mct_pay_min_topup":       setting.MCTPayMinTopUp,
 		"waffo_min_topup":         setting.WaffoMinTopUp,
 		"waffo_pancake_min_topup": setting.WaffoPancakeMinTopUp,
 		"amount_options":          operation_setting.GetPaymentSetting().AmountOptions,

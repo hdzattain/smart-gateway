@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 QuantumNous
+Copyright (C) 2025 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 
 import {
@@ -31,7 +31,7 @@ export let API = axios.create({
     ? import.meta.env.VITE_REACT_APP_SERVER_URL
     : '',
   headers: {
-    'New-API-User': getUserIdFromLocalStorage(),
+    'Smart-Gateway-User': getUserIdFromLocalStorage(),
     'Cache-Control': 'no-store',
   },
 });
@@ -86,7 +86,7 @@ export function updateAPI() {
       ? import.meta.env.VITE_REACT_APP_SERVER_URL
       : '',
     headers: {
-      'New-API-User': getUserIdFromLocalStorage(),
+      'Smart-Gateway-User': getUserIdFromLocalStorage(),
       'Cache-Control': 'no-store',
     },
   });

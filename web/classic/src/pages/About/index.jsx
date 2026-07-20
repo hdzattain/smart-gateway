@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 QuantumNous
+Copyright (C) 2025 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 
 import React, { useEffect, useState } from 'react';
@@ -62,45 +62,45 @@ const About = () => {
   const customDescription = (
     <div style={{ textAlign: 'center' }}>
       <p>{t('可在设置页面设置关于内容，支持 HTML & Markdown')}</p>
-      {t('New API项目仓库地址：')}
+      {t('Smart Gateway项目仓库地址：')}
       <a
-        href='https://github.com/QuantumNous/new-api'
+        href='https://github.com/hdzattain/smart-gateway'
         target='_blank'
         rel='noopener noreferrer'
         className='!text-semi-color-primary'
       >
-        https://github.com/QuantumNous/new-api
+        https://github.com/hdzattain/smart-gateway
       </a>
       <p>
         <a
-          href='https://github.com/QuantumNous/new-api'
+          href='https://github.com/hdzattain/smart-gateway'
           target='_blank'
           rel='noopener noreferrer'
           className='!text-semi-color-primary'
         >
-          NewAPI
+          Smart Gateway
         </a>{' '}
         {t('© {{currentYear}}', { currentYear })}{' '}
         <a
-          href='https://github.com/QuantumNous'
+          href='https://github.com/Smart Gateway'
           target='_blank'
           rel='noopener noreferrer'
           className='!text-semi-color-primary'
         >
-          QuantumNous
+          Smart Gateway
         </a>{' '}
         {t('| 基于')}{' '}
         <a
-          href='https://github.com/songquanpeng/one-api/releases/tag/v0.5.4'
+          href='https://smart-gateway.shop/releases/tag/v0.5.4'
           target='_blank'
           rel='noopener noreferrer'
           className='!text-semi-color-primary'
         >
-          One API v0.5.4
+          Smart Gateway v0.5.4
         </a>{' '}
         © 2023{' '}
         <a
-          href='https://github.com/songquanpeng'
+          href='https://smart-gateway.shop'
           target='_blank'
           rel='noopener noreferrer'
           className='!text-semi-color-primary'
@@ -111,7 +111,7 @@ const About = () => {
       <p>
         {t('本项目根据')}
         <a
-          href='https://github.com/songquanpeng/one-api/blob/v0.5.4/LICENSE'
+          href='https://smart-gateway.shop/blob/v0.5.4/LICENSE'
           target='_blank'
           rel='noopener noreferrer'
           className='!text-semi-color-primary'

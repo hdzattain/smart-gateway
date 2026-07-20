@@ -124,6 +124,21 @@ const paymentSchema = z.object({
       })
     }
   }),
+  MCTPayEnabled: z.boolean(),
+  MCTPayMerchantID: z.string(),
+  MCTPaySecretKey: z.string(),
+  MCTPayCheckoutURL: z.string().refine((value) => {
+    const trimmed = value.trim()
+    if (!trimmed) return true
+    return /^https?:\/\//.test(trimmed)
+  }, 'Provide a valid URL starting with http:// or https://'),
+  MCTPayWebhookURL: z.string().refine((value) => {
+    const trimmed = value.trim()
+    if (!trimmed) return true
+    return /^https?:\/\//.test(trimmed)
+  }, 'Provide a valid URL starting with http:// or https://'),
+  MCTPayUnitPrice: z.coerce.number().min(0),
+  MCTPayMinTopUp: z.coerce.number().min(1),
   StripeApiSecret: z.string(),
   StripeWebhookSecret: z.string(),
   StripePriceId: z.string(),
@@ -409,6 +424,13 @@ export function PaymentSettingsSection({
       PayMethods: values.PayMethods.trim(),
       AmountOptions: values.AmountOptions.trim(),
       AmountDiscount: values.AmountDiscount.trim(),
+      MCTPayEnabled: values.MCTPayEnabled,
+      MCTPayMerchantID: values.MCTPayMerchantID.trim(),
+      MCTPaySecretKey: values.MCTPaySecretKey.trim(),
+      MCTPayCheckoutURL: removeTrailingSlash(values.MCTPayCheckoutURL),
+      MCTPayWebhookURL: removeTrailingSlash(values.MCTPayWebhookURL),
+      MCTPayUnitPrice: values.MCTPayUnitPrice,
+      MCTPayMinTopUp: values.MCTPayMinTopUp,
       StripeApiSecret: values.StripeApiSecret.trim(),
       StripeWebhookSecret: values.StripeWebhookSecret.trim(),
       StripePriceId: values.StripePriceId.trim(),
@@ -453,6 +475,17 @@ export function PaymentSettingsSection({
       PayMethods: initialRef.current.PayMethods.trim(),
       AmountOptions: initialRef.current.AmountOptions.trim(),
       AmountDiscount: initialRef.current.AmountDiscount.trim(),
+      MCTPayEnabled: initialRef.current.MCTPayEnabled,
+      MCTPayMerchantID: initialRef.current.MCTPayMerchantID.trim(),
+      MCTPaySecretKey: initialRef.current.MCTPaySecretKey.trim(),
+      MCTPayCheckoutURL: removeTrailingSlash(
+        initialRef.current.MCTPayCheckoutURL
+      ),
+      MCTPayWebhookURL: removeTrailingSlash(
+        initialRef.current.MCTPayWebhookURL
+      ),
+      MCTPayUnitPrice: initialRef.current.MCTPayUnitPrice,
+      MCTPayMinTopUp: initialRef.current.MCTPayMinTopUp,
       StripeApiSecret: initialRef.current.StripeApiSecret.trim(),
       StripeWebhookSecret: initialRef.current.StripeWebhookSecret.trim(),
       StripePriceId: initialRef.current.StripePriceId.trim(),
@@ -542,6 +575,43 @@ export function PaymentSettingsSection({
         key: 'payment_setting.amount_discount',
         value: sanitized.AmountDiscount,
       })
+    }
+
+    if (sanitized.MCTPayEnabled !== initial.MCTPayEnabled) {
+      updates.push({ key: 'MCTPayEnabled', value: sanitized.MCTPayEnabled })
+    }
+
+    if (sanitized.MCTPayMerchantID !== initial.MCTPayMerchantID) {
+      updates.push({
+        key: 'MCTPayMerchantID',
+        value: sanitized.MCTPayMerchantID,
+      })
+    }
+
+    if (sanitized.MCTPaySecretKey) {
+      updates.push({ key: 'MCTPaySecretKey', value: sanitized.MCTPaySecretKey })
+    }
+
+    if (sanitized.MCTPayCheckoutURL !== initial.MCTPayCheckoutURL) {
+      updates.push({
+        key: 'MCTPayCheckoutURL',
+        value: sanitized.MCTPayCheckoutURL,
+      })
+    }
+
+    if (sanitized.MCTPayWebhookURL !== initial.MCTPayWebhookURL) {
+      updates.push({
+        key: 'MCTPayWebhookURL',
+        value: sanitized.MCTPayWebhookURL,
+      })
+    }
+
+    if (sanitized.MCTPayUnitPrice !== initial.MCTPayUnitPrice) {
+      updates.push({ key: 'MCTPayUnitPrice', value: sanitized.MCTPayUnitPrice })
+    }
+
+    if (sanitized.MCTPayMinTopUp !== initial.MCTPayMinTopUp) {
+      updates.push({ key: 'MCTPayMinTopUp', value: sanitized.MCTPayMinTopUp })
     }
 
     if (
@@ -1072,6 +1142,174 @@ export function PaymentSettingsSection({
                     </FormControl>
                     <FormDescription>
                       {t('Discount map by recharge amount (JSON object)')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className='space-y-4'>
+            <div>
+              <h3 className='text-lg font-medium'>{t('MCTPay Gateway')}</h3>
+              <p className='text-muted-foreground text-sm'>
+                {t('Configuration for MCTPay payment integration')}
+              </p>
+            </div>
+
+            <FormField
+              control={form.control}
+              name='MCTPayEnabled'
+              render={({ field }) => (
+                <SettingsSwitchItem>
+                  <SettingsSwitchContent>
+                    <FormLabel>{t('Enable MCTPay')}</FormLabel>
+                    <FormDescription>
+                      {t('Allow users to top up through MCTPay')}
+                    </FormDescription>
+                  </SettingsSwitchContent>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </SettingsSwitchItem>
+              )}
+            />
+
+            <div className='grid gap-6 md:grid-cols-3'>
+              <FormField
+                control={form.control}
+                name='MCTPayMerchantID'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('MCTPay merchant ID')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t('Enter MCTPay merchant ID')}
+                        autoComplete='off'
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='MCTPaySecretKey'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('MCTPay secret key')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='password'
+                        placeholder={t('Enter new key to update')}
+                        autoComplete='new-password'
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Leave blank unless rotating the secret')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='MCTPayCheckoutURL'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('MCTPay checkout URL')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='https://mct.com.sg/chn/mctpay/'
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('MCTPay hosted checkout endpoint')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className='grid gap-6 md:grid-cols-3'>
+              <FormField
+                control={form.control}
+                name='MCTPayWebhookURL'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('MCTPay webhook URL')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t(
+                          'https://gateway.example.com/api/mctpay/webhook'
+                        )}
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Leave blank to use the server default callback')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='MCTPayUnitPrice'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t('Unit price (local currency / USD)')}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='0.01'
+                        min={0}
+                        {...safeNumberFieldProps(field)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('e.g., 1 means 1 local currency per USD')}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='MCTPayMinTopUp'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('Minimum top-up (USD)')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='0.01'
+                        min={1}
+                        {...safeNumberFieldProps(field)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Minimum recharge amount in USD')}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

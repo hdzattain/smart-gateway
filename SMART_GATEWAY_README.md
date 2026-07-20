@@ -4,7 +4,7 @@ This repository contains the source and non-sensitive deployment assets for the 
 
 ## What is included
 
-- Upstream application source based on QuantumNous/new-api.
+- Upstream application source based on hdzattain/smart-gateway.
 - Docker deployment template: `docker-compose.smart-gateway.yml`.
 - Runtime branding helper: `brand-smart-gateway.sh`.
 - Customer/admin handoff guide: `docs/CUSTOMER_HANDOFF.md`.
@@ -16,10 +16,10 @@ The following files are runtime/private and must not be committed:
 
 - `.env`
 - `.admin_password`
-- `one-api.db` / `*.db`
+- `smart-gateway.db` / `*.db`
 - `logs/`
 - `data/`
-- generated binaries such as `new-api-server`
+- generated binaries such as `smart-gateway-server`
 - TLS private keys and certificates
 - frontend `node_modules/` and build caches
 
@@ -33,17 +33,17 @@ Port `443` is intentionally reserved for an existing x-ui/xray service on the cu
 ## Quick start on a new VPS
 
 ```bash
-git clone https://github.com/hdzattain/smart-gateway.git /root/new-api
-cd /root/new-api
+git clone https://github.com/hdzattain/smart-gateway.git /root/smart-gateway
+cd /root/smart-gateway
 bash scripts/provision-vps.sh
 ```
 
 Then restore runtime data from the old host if needed:
 
 ```bash
-scp root@OLD_HOST:/root/new-api/one-api.db /root/new-api/one-api.db
-scp root@OLD_HOST:/root/new-api/.admin_password /root/new-api/.admin_password
-chmod 600 /root/new-api/.admin_password
+scp root@OLD_HOST:/root/smart-gateway/smart-gateway.db /root/smart-gateway/smart-gateway.db
+scp root@OLD_HOST:/root/smart-gateway/.admin_password /root/smart-gateway/.admin_password
+chmod 600 /root/smart-gateway/.admin_password
 systemctl restart smart-gateway nginx
 ```
 

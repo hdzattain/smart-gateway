@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "new-api-web-workspace",
+      "name": "smart-gateway-web-workspace",
     },
     "classic": {
       "name": "react-template",

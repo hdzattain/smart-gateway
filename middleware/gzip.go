@@ -5,9 +5,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/QuantumNous/new-api/constant"
 	"github.com/andybalholm/brotli"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/constant"
 )
 
 type readCloser struct {

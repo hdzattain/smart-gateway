@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { parseCurrencyDisplayType } from '@/lib/currency'
 import { CheckinSettingsSection } from '../general/checkin-settings-section'
@@ -141,6 +141,14 @@ const BILLING_SECTIONS = [
           PayMethods: settings.PayMethods,
           AmountOptions: settings['payment_setting.amount_options'],
           AmountDiscount: settings['payment_setting.amount_discount'],
+          MCTPayEnabled: settings.MCTPayEnabled ?? false,
+          MCTPayMerchantID: settings.MCTPayMerchantID ?? '',
+          MCTPaySecretKey: settings.MCTPaySecretKey ?? '',
+          MCTPayCheckoutURL:
+            settings.MCTPayCheckoutURL ?? 'https://mct.com.sg/chn/mctpay/',
+          MCTPayWebhookURL: settings.MCTPayWebhookURL ?? '',
+          MCTPayUnitPrice: settings.MCTPayUnitPrice ?? 1,
+          MCTPayMinTopUp: settings.MCTPayMinTopUp ?? 1,
           StripeApiSecret: settings.StripeApiSecret,
           StripeWebhookSecret: settings.StripeWebhookSecret,
           StripePriceId: settings.StripePriceId,

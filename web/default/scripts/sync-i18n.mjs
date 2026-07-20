@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -63,9 +63,9 @@ const BRAND_AND_LITERAL_KEYS = new Set([
   'Mistral',
   'MokaAI',
   'Moonshot',
-  'New API',
-  'New API &lt;noreply@example.com&gt;',
-  'NewAPI',
+  'Smart Gateway',
+  'Smart Gateway &lt;noreply@example.com&gt;',
+  'Smart Gateway',
   'OAuth Client Secret',
   'OhMyGPT',
   'Ollama',
@@ -76,7 +76,7 @@ const BRAND_AND_LITERAL_KEYS = new Set([
   'Pancake',
   'Passkey',
   'Perplexity',
-  'QuantumNous',
+  'Smart Gateway',
   'Quota:',
   'Replicate',
   'SiliconFlow',
@@ -108,7 +108,7 @@ const BRAND_AND_LITERAL_KEYS = new Set([
   'footer.columns.related.links.midjourney',
   'footer.columns.related.links.newApiKeyTool',
   'my-status',
-  'new-api-key-tool',
+  'Smart Gateway key tool',
   'price_xxx',
   'whsec_xxx',
 ])

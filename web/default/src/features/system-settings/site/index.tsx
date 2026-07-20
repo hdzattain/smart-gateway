@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { SettingsPage } from '../components/settings-page'
 import type { SiteSettings } from '../types'
@@ -27,12 +27,12 @@ import {
 const defaultSiteSettings: SiteSettings = {
   'theme.frontend': 'default',
   Notice: '',
-  SystemName: 'New API',
+  SystemName: 'Smart Gateway',
   Logo: '',
   Footer: '',
   About: '',
   HomePageContent: '',
-  ServerAddress: '',
+  ServerAddress: 'https://smart-gateway.shop',
   'legal.user_agreement': '',
   'legal.privacy_policy': '',
   HeaderNavModules: '',

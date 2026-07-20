@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/root/new-api}"
+APP_DIR="${APP_DIR:-/root/smart-gateway}"
 DOMAIN="${DOMAIN:-smart-gateway.shop}"
 GO_VERSION="${GO_VERSION:-1.25.1}"
 
@@ -46,20 +46,20 @@ fi
 
 cd "$APP_DIR"
 go mod download
-go build -ldflags "-s -w" -o "$APP_DIR/new-api-server" main.go
+go build -ldflags "-s -w" -o "$APP_DIR/smart-gateway-server" main.go
 
 mkdir -p "$APP_DIR/logs"
 cat >/etc/systemd/system/smart-gateway.service <<EOF
 [Unit]
-Description=Smart Gateway (New API)
+Description=Smart Gateway (Smart Gateway)
 After=network.target
 
 [Service]
 Type=simple
 WorkingDirectory=$APP_DIR
 Environment=PORT=3000
-Environment=SQLITE_PATH=$APP_DIR/one-api.db
-ExecStart=$APP_DIR/new-api-server
+Environment=SQLITE_PATH=$APP_DIR/smart-gateway.db
+ExecStart=$APP_DIR/smart-gateway-server
 Restart=always
 RestartSec=5
 LimitNOFILE=65535

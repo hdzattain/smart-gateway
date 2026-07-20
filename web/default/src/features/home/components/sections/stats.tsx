@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -105,18 +105,18 @@ export function Stats(_props: StatsProps) {
   ]
 
   return (
-    <div className='border-border/40 bg-muted/10 relative z-10 border-y'>
-      <div className='mx-auto max-w-6xl px-6 py-10 md:py-12'>
-        <div className='grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12'>
+    <div className='border-border/50 relative z-10 border-y bg-background/70'>
+      <div className='mx-auto max-w-6xl px-6 py-8 md:py-10'>
+        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
           {stats.map((s) => (
             <div
               key={s.label}
-              className='flex flex-col items-center text-center'
+              className='rounded-2xl border border-border/60 bg-background/80 px-4 py-5 text-center shadow-xs backdrop-blur-sm'
             >
-              <span className='text-2xl font-bold tracking-tight md:text-3xl'>
+              <span className='text-2xl font-semibold tracking-tight md:text-3xl'>
                 <Counter end={s.end} suffix={s.suffix} decimals={s.decimals} />
               </span>
-              <span className='text-muted-foreground mt-1.5 text-xs'>
+              <span className='text-muted-foreground mt-1.5 text-xs leading-snug'>
                 {s.label}
               </span>
             </div>

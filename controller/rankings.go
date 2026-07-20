@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/QuantumNous/new-api/service"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/service"
 )
 
 func GetRankings(c *gin.Context) {

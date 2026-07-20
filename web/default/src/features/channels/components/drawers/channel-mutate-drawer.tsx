@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import {
   type ReactNode,
@@ -630,7 +630,7 @@ export function ChannelMutateDrawer({
     const timer = setTimeout(() => {
       toast.warning(
         t(
-          'Warning: Base URL should not end with /v1. New API will handle it automatically. This may cause request failures.'
+          'Warning: Base URL should not end with /v1. Smart Gateway will handle it automatically. This may cause request failures.'
         ),
         { duration: 5000 }
       )
@@ -1787,7 +1787,7 @@ export function ChannelMutateDrawer({
                             </FormControl>
                             <FormDescription>
                               {t(
-                                'Custom API base URL. For official channels, New API has built-in addresses. Only fill this for third-party proxy sites or special endpoints. Do not add /v1 or trailing slash.'
+                                'Custom API base URL. For official channels, Smart Gateway has built-in addresses. Only fill this for third-party proxy sites or special endpoints. Do not add /v1 or trailing slash.'
                               )}
                             </FormDescription>
                             <FormMessage />

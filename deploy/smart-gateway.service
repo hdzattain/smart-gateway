@@ -1,0 +1,27 @@
+[Unit]
+Description=Smart Gateway API service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=smart-gateway
+Group=smart-gateway
+WorkingDirectory=/opt/smart-gateway
+Environment=PORT=3000
+Environment=HOST=127.0.0.1
+Environment=MILVUS_ADDRESS=127.0.0.1:19530
+ExecStart=/opt/smart-gateway/smart-gateway
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/smart-gateway /var/lib/smart-gateway /var/log/smart-gateway
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target

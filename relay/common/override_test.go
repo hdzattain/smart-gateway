@@ -6,11 +6,11 @@ import (
 	"reflect"
 	"testing"
 
-	common2 "github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/types"
+	common2 "github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/types"
 
-	"github.com/QuantumNous/new-api/dto"
-	"github.com/QuantumNous/new-api/setting/model_setting"
+	"github.com/hdzattain/smart-gateway/dto"
+	"github.com/hdzattain/smart-gateway/setting/model_setting"
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 )

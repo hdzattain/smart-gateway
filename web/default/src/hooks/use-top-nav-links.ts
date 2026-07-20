@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -38,6 +38,7 @@ export type TopNavLink = {
  *   console: true,
  *   pricing: { enabled: true, requireAuth: false },
  *   rankings: { enabled: true, requireAuth: false },
+ *   aiDeals: { enabled: true, requireAuth: false },
  *   docs: true,
  *   about: true
  * }
@@ -76,6 +77,13 @@ export function useTopNavLinks(): TopNavLink[] {
   if (pricing && typeof pricing === 'object' && pricing.enabled) {
     const requiresAuth = pricing.requireAuth && !isAuthed
     links.push({ title: t('Model Square'), href: '/pricing', requiresAuth })
+  }
+
+  // AI Deals
+  const aiDeals = modules?.aiDeals
+  if (aiDeals && typeof aiDeals === 'object' && aiDeals.enabled) {
+    const requiresAuth = aiDeals.requireAuth && !isAuthed
+    links.push({ title: t('AI Deals'), href: '/ai-deals', requiresAuth })
   }
 
   // Rankings

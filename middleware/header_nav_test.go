@@ -5,10 +5,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/QuantumNous/new-api/common"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/hdzattain/smart-gateway/common"
 	"github.com/stretchr/testify/require"
 )
 
@@ -69,7 +69,7 @@ func performHeaderNavRequest(t *testing.T, handler gin.HandlerFunc, authenticate
 	recorder := httptest.NewRecorder()
 	request := httptest.NewRequest(http.MethodGet, "/api/test", nil)
 	if authenticated {
-		request.Header.Set("New-Api-User", "1")
+		request.Header.Set("Smart-Gateway-User", "1")
 		for _, cookie := range cookies {
 			request.AddCookie(cookie)
 		}

@@ -68,9 +68,9 @@
 
       <section id="auth">
         <h2>2. 认证与环境</h2>
-        <p>用户发起支付接口需要登录态 Cookie 和 <code>New-Api-User</code> 请求头；支付服务商回调接口是公开入口，但必须由服务端使用签名密钥校验。</p>
+        <p>用户发起支付接口需要登录态 Cookie 和 <code>Smart-Gateway-User</code> 请求头；支付服务商回调接口是公开入口，但必须由服务端使用签名密钥校验。</p>
         <pre><code>Cookie: _session=...
-New-Api-User: &lt;user_id&gt;
+Smart-Gateway-User: &lt;user_id&gt;
 Content-Type: application/json</code></pre>
         <p>管理员配置支付参数时，需使用管理员账号登录后台。管理员账号和初始密码由交付方单独提供，不应写入 Git 仓库或前端代码。</p>
       </section>

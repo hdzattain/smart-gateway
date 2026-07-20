@@ -5,10 +5,10 @@ DEV_FRONTEND_DEFAULT_PORT ?= 5173
 DEV_FRONTEND_CLASSIC_PORT ?= 5174
 DEV_COMPOSE_FILE = docker-compose.dev.yml
 DEV_POSTGRES_SERVICE = postgres
-DEV_BACKEND_SERVICE = new-api
-DEV_POSTGRES_DB = new-api
+DEV_BACKEND_SERVICE = smart-gateway
+DEV_POSTGRES_DB = smart-gateway
 DEV_POSTGRES_USER = root
-DEV_SQLITE_PATH ?= one-api.db
+DEV_SQLITE_PATH ?= smart-gateway.db
 
 .PHONY: all build-frontend build-frontend-classic build-all-frontends start-backend dev dev-api dev-api-rebuild dev-web dev-web-classic reset-setup
 

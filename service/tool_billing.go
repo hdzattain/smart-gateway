@@ -3,8 +3,8 @@ package service
 import (
 	"math"
 
-	"github.com/QuantumNous/new-api/common"
-	"github.com/QuantumNous/new-api/setting/operation_setting"
+	"github.com/hdzattain/smart-gateway/common"
+	"github.com/hdzattain/smart-gateway/setting/operation_setting"
 )
 
 // ToolCallUsage captures all tool call counts from a single request.

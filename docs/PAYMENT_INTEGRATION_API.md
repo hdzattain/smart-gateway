@@ -40,7 +40,7 @@ Admin-only compliance endpoint:
 ```http
 POST /api/option/payment_compliance
 Cookie: session cookie
-New-Api-User: <admin_user_id>
+Smart-Gateway-User: <admin_user_id>
 ```
 
 ## Stripe credit-card integration
@@ -65,7 +65,7 @@ https://smart-gateway.shop/api/stripe/webhook
 POST /api/user/self/stripe/amount
 Content-Type: application/json
 Cookie: user session
-New-Api-User: <user_id>
+Smart-Gateway-User: <user_id>
 ```
 
 Typical request body:
@@ -82,7 +82,7 @@ Typical request body:
 POST /api/user/self/stripe/pay
 Content-Type: application/json
 Cookie: user session
-New-Api-User: <user_id>
+Smart-Gateway-User: <user_id>
 ```
 
 Typical request body:
@@ -102,7 +102,7 @@ The response returns checkout/session data used by the frontend to redirect the 
 POST /api/subscription/stripe/pay
 Content-Type: application/json
 Cookie: user session
-New-Api-User: <user_id>
+Smart-Gateway-User: <user_id>
 ```
 
 Typical request body:

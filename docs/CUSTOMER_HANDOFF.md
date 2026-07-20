@@ -8,13 +8,13 @@
 ## Administrator account
 
 - Username: `admin`
-- Password: stored on the production VPS at `/root/new-api/.admin_password`
+- Password: stored on the production VPS at `/root/smart-gateway/.admin_password`
 
 For security, the real administrator password is not stored in this repository. Retrieve it on the production server:
 
 ```bash
 ssh root@45.78.79.80
-cat /root/new-api/.admin_password
+cat /root/smart-gateway/.admin_password
 ```
 
 Change the password after handoff from the web console.
@@ -31,7 +31,7 @@ This demo account is for verification only. Delete it or rotate its password bef
 
 1. Open `http://smart-gateway.shop`.
 2. Click **Sign in**.
-3. Log in as `admin` using the password from `/root/new-api/.admin_password`.
+3. Log in as `admin` using the password from `/root/smart-gateway/.admin_password`.
 4. Configure upstream channels in the admin console.
 5. Create customer/reseller users.
 6. Assign model groups and quotas to customers.
@@ -69,5 +69,5 @@ curl http://smart-gateway.shop/healthz
 1. Rotate the `admin` password.
 2. Delete or rotate the demo `reseller1` account.
 3. Configure upstream providers and billing carefully.
-4. Add backups for `/root/new-api/one-api.db` or migrate to MySQL/PostgreSQL.
+4. Add backups for `/root/smart-gateway/smart-gateway.db` or migrate to MySQL/PostgreSQL.
 5. If HTTPS is required on this service, move the existing x-ui/xray process off port `443` or use a separate origin/IP.

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2026 QuantumNous
+Copyright (C) 2023-2026 Smart Gateway
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-For commercial licensing, please contact support@quantumnous.com
+For commercial licensing, please contact support@smart-gateway.shop
 */
 import { useState, useCallback } from 'react'
 import i18next from 'i18next'
@@ -22,13 +22,16 @@ import { toast } from 'sonner'
 import {
   calculateAmount,
   calculateStripeAmount,
+  calculateMCTPayAmount,
   calculateWaffoPancakeAmount,
   requestPayment,
   requestStripePayment,
+  requestMCTPayPayment,
   isApiSuccess,
 } from '../api'
 import {
   isStripePayment,
+  isMCTPayPayment,
   isWaffoPancakePayment,
   submitPaymentForm,
 } from '../lib'
@@ -49,9 +52,12 @@ export function usePayment() {
         setCalculating(true)
 
         const isStripe = isStripePayment(paymentType)
+        const isMCTPay = isMCTPayPayment(paymentType)
         const isPancake = isWaffoPancakePayment(paymentType)
-        const response = isStripe
-          ? await calculateStripeAmount({ amount: topupAmount })
+        const response = isMCTPay
+          ? await calculateMCTPayAmount({ amount: topupAmount })
+          : isStripe
+            ? await calculateStripeAmount({ amount: topupAmount })
           : isPancake
             ? await calculateWaffoPancakeAmount({ amount: topupAmount })
             : await calculateAmount({ amount: topupAmount })
@@ -82,10 +88,16 @@ export function usePayment() {
         setProcessing(true)
 
         const isStripe = isStripePayment(paymentType)
+        const isMCTPay = isMCTPayPayment(paymentType)
         const amount = Math.floor(topupAmount)
 
-        const response = isStripe
-          ? await requestStripePayment({
+        const response = isMCTPay
+          ? await requestMCTPayPayment({
+              amount,
+              payment_method: 'mct_pay',
+            })
+          : isStripe
+            ? await requestStripePayment({
               amount,
               payment_method: 'stripe',
             })
@@ -99,15 +111,15 @@ export function usePayment() {
           return false
         }
 
-        // Handle Stripe payment
-        if (isStripe && response.data?.pay_link) {
+        // Handle hosted checkout payments
+        if ((isStripe || isMCTPay) && response.data?.pay_link) {
           window.open(response.data.pay_link as string, '_blank')
           toast.success(i18next.t('Redirecting to payment page...'))
           return true
         }
 
-        // Handle non-Stripe payment
-        if (!isStripe && response.data) {
+        // Handle form-based payment
+        if (!isStripe && !isMCTPay && response.data) {
           const url = (response as unknown as { url?: string }).url
           if (url) {
             submitPaymentForm(url, response.data)
